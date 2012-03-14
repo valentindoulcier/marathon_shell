@@ -4,6 +4,7 @@
     android:versionName="1.0" xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-sdk android:minSdkVersion="13" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
         android:icon="@drawable/logo_eco_marathon_shell"

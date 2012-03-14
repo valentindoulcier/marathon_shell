@@ -20,6 +20,10 @@ public final class R {
         public static final int ic_sortie=0x7f020003;
         public static final int logo_eco_marathon_shell=0x7f020004;
     }
+    public static final class id {
+        public static final int progressBarVitesse=0x7f060000;
+        public static final int textViewVitesse=0x7f060001;
+    }
     public static final class layout {
         public static final int application=0x7f030000;
     }

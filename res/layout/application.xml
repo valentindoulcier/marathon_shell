@@ -2,11 +2,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="@drawable/auroralized_aqua_dock"
     android:orientation="vertical" >
 
+
+
+    <ProgressBar
+        android:id="@+id/progressBarVitesse"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <TextView
-        android:layout_width="fill_parent"
+        android:id="@+id/textViewVitesse"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello" />
+        android:text="Large Text"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="50dip" />
 
 </LinearLayout>
