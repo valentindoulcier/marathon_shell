@@ -9,7 +9,7 @@
     <application
         android:icon="@drawable/logo_eco_marathon_shell"
         android:label="@string/app_name" >
-        <activity android:name="MarathonShellActivity" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:screenOrientation="landscape">
+        <activity android:name=".Application" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
