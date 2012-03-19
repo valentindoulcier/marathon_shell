@@ -67,10 +67,10 @@ public class XMLReadAndWrite{
 	 * METHODES
 	 ****************************/
 
-	public void OuvertureInput(Context context)
+	public void OuvertureInput(Context context, String nomFichier)
 	{
         try{
-        	fIn = context.openFileInput("monFichierXML.xml");
+        	fIn = context.openFileInput(nomFichier);
         	isr = new InputStreamReader(fIn);
         }
         catch (Exception e) {
@@ -79,16 +79,17 @@ public class XMLReadAndWrite{
         }
 	}
 	
-	public void OuvertureOutput(Context context)
+	public void OuvertureOutput(Context context, String nomFichier)
 	{
         try{
-        	if(context.deleteFile("monFichierXML.xml"))
+        	if(context.deleteFile(nomFichier))
         		Log.i(LogTag, Class + "Delete OK");
         	else
         		Log.e(LogTag, Class + "Erreur Delete");
         	
-        	fOut = context.openFileOutput("monFichierXML.xml", Context.MODE_APPEND); //MODE_APPEND //32768
+        	fOut = context.openFileOutput(nomFichier, Context.MODE_APPEND); //MODE_APPEND //32768
         	osw = new OutputStreamWriter(fOut);
+        	
         	Write("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
         	//Write("<bonjour valentin=\"content\">dans sa chambre</bonjour>");
         }

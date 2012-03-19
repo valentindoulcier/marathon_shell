@@ -58,6 +58,9 @@ public class Application extends Activity implements LocationListener {
 	
 	private float vitesses[];
 	
+	private String nomFichier = "";
+	private java.util.Date maDate;
+	
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -89,8 +92,13 @@ public class Application extends Activity implements LocationListener {
 				if(tbCourse.isChecked()) {
 					modeCourse = true;
 					
-					xmlReadAndWrite.OuvertureInput(getApplicationContext());
-					xmlReadAndWrite.OuvertureOutput(getApplicationContext());
+					maDate = new java.util.Date();
+					nomFichier = "Course_" + maDate.getDate() + "-" + maDate.getMonth() + "-" + (maDate.getYear() + 1900) + "_" + maDate.getHours() + "-" + maDate.getMinutes() + "-" + maDate.getSeconds() + ".xml";
+					
+					Log.v(LogTag, Class + nomFichier);
+					
+					xmlReadAndWrite.OuvertureInput(getApplicationContext(), "monFichierXML.xml");
+					xmlReadAndWrite.OuvertureOutput(getApplicationContext(), "monFichierXML.xml");
 					
 					compteur = 0;
 					tvMoyenne.setText("0 km/h");
@@ -99,7 +107,7 @@ public class Application extends Activity implements LocationListener {
 				} else {
 					modeCourse = false;
 
-					//Log.w(LogTag, xmlReadAndWrite.Read());
+					Log.w(LogTag, xmlReadAndWrite.Read());
 					xmlReadAndWrite.FermetureOutput(getApplicationContext());
 					xmlReadAndWrite.FermetureInput(getApplicationContext());
 					
