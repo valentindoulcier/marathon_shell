@@ -37,6 +37,8 @@ public class XMLReadAndWrite{
 	private String LogTag = "Marathon Shell";
 	private String Class = "XMLReadAndWrite - ";
 	
+	private int compteur;
+	
 	private FileInputStream fIn = null;
     private InputStreamReader isr = null;
     
@@ -90,8 +92,8 @@ public class XMLReadAndWrite{
         	fOut = context.openFileOutput(nomFichier, Context.MODE_APPEND); //MODE_APPEND //32768
         	osw = new OutputStreamWriter(fOut);
         	
+        	compteur = 0;
         	Write("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
-        	//Write("<bonjour valentin=\"content\">dans sa chambre</bonjour>");
         }
         catch (Exception e) {
         	Log.e(LogTag, Class + "Ouverture Output");
@@ -121,11 +123,25 @@ public class XMLReadAndWrite{
 		}
 	}
 	
-	public String FormatPoint()
+	public void InsertionDebutFichier(String date)
 	{
-		String result = "";
+		Write("<course value=\"" + date + "\">\n");
+		Write("<listePoints>\n");
+	}
+	
+	public void InsertionFinFichier()
+	{
+		Write("</listePoints>\n");
+		Write("<description>\n");
 		
-		return result;
+		Write("</description>\n");
+		Write("</course>");
+	}
+	
+	public String FormatPoint(String heure, String vitesse, String latitude, String longitude)
+	{
+		compteur++;
+		return "<point value=\"" + compteur + "\"><heure>" + heure + "</heure><vitesse>" + vitesse + "</vitesse><latitude>" + latitude + "</latitude><longitude>" + longitude + "</longitude></point>\n";
 	}
 	
 	public void Write(String data)

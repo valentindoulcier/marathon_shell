@@ -26,7 +26,10 @@ public class Point {
 	@SuppressWarnings("unused")
 	private String Class = "POINT - ";
 	
-	
+	float vitesse;
+	float latitude;
+	float longitude;
+	float date;
 	
 	/****************************
 	 * CONSTRUCTEURS

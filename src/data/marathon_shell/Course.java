@@ -3,6 +3,9 @@
  */
 package data.marathon_shell;
 
+import java.util.ArrayList;
+
+
 /**
  * Classe contenant les fonctions principales utilisées par l'application.
  * 
@@ -25,7 +28,7 @@ public class Course {
 	@SuppressWarnings("unused")
 	private String Class = "COURSE - ";
 	
-	
+	ArrayList<Point> ListePoints = new ArrayList<Point>();
 	
 	/****************************
 	 * CONSTRUCTEURS
@@ -40,5 +43,22 @@ public class Course {
 	/****************************
 	 * METHODES
 	 ****************************/
+	
+	/*
+	public float getMoyenne()
+	{
+		float moyenne = 0;
+		
+		for (int i = 0; i < compteur; i++)
+		{
+			moyenne += vitesses[i];
+		}
+		
+		
+		moyenne /= compteur;
+		
+		return moyenne;
+	}
+	*/
 
 }

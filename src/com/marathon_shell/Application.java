@@ -1,6 +1,10 @@
 package com.marathon_shell;
 
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import data.marathon_shell.Commande;
 import data.marathon_shell.XMLReadAndWrite;
 import android.app.Activity;
@@ -45,7 +49,7 @@ public class Application extends Activity implements LocationListener {
 	private ProgressBar pbVitesse;
 	
 	private TextView tvVitesse;
-	private TextView tvMoyenne;
+	//private TextView tvMoyenne;
 	
 	private ToggleButton tbCourse;
 	
@@ -54,12 +58,13 @@ public class Application extends Activity implements LocationListener {
 	private String LogTag = "Marathon Shell";
 	private String Class = "APPLICATION - ";
 	
-	private static int compteur = 0;
+	//private static int compteur = 0;
 	
 	private float vitesses[];
 	
 	private String nomFichier = "";
-	private java.util.Date maDate;
+	private SimpleDateFormat maDate;
+	private Date Aujourdhui;
 	
 	
 	/** Called when the activity is first created. */
@@ -81,7 +86,7 @@ public class Application extends Activity implements LocationListener {
 		pbVitesse.setMax(150);
 		
 		tvVitesse = (TextView) findViewById(R.id.tvVitesse);
-		tvMoyenne = (TextView) findViewById(R.id.tvMoyenne);
+		//tvMoyenne = (TextView) findViewById(R.id.tvMoyenne);
 		
 		tbCourse = (ToggleButton) findViewById(R.id.tbCourse);
 		tbCourse.setBackgroundColor(Color.GREEN);
@@ -92,27 +97,31 @@ public class Application extends Activity implements LocationListener {
 				if(tbCourse.isChecked()) {
 					modeCourse = true;
 					
-					maDate = new java.util.Date();
-					nomFichier = "Course_" + maDate.getDate() + "-" + maDate.getMonth() + "-" + (maDate.getYear() + 1900) + "_" + maDate.getHours() + "-" + maDate.getMinutes() + "-" + maDate.getSeconds() + ".xml";
+					maDate = new SimpleDateFormat("yyyy-MM-dd_kk-mm-ss", Locale.FRANCE);
+					Aujourdhui = new Date();
+					
+					nomFichier = "Course_" + maDate.format(Aujourdhui) + ".xml";
+						
+					maDate = new SimpleDateFormat("yyyy-MM-dd", Locale.FRANCE);
+					Aujourdhui = new Date();
 					
 					Log.v(LogTag, Class + nomFichier);
 					
 					xmlReadAndWrite.OuvertureInput(getApplicationContext(), "monFichierXML.xml");
 					xmlReadAndWrite.OuvertureOutput(getApplicationContext(), "monFichierXML.xml");
+					xmlReadAndWrite.InsertionDebutFichier(maDate.format(Aujourdhui));
 					
-					compteur = 0;
-					tvMoyenne.setText("0 km/h");
 					tbCourse.setBackgroundColor(Color.RED);
 					Log.v(LogTag, Class + "Mode COURSE : ON");
 				} else {
 					modeCourse = false;
 
+					xmlReadAndWrite.InsertionFinFichier();
 					Log.w(LogTag, xmlReadAndWrite.Read());
 					xmlReadAndWrite.FermetureOutput(getApplicationContext());
 					xmlReadAndWrite.FermetureInput(getApplicationContext());
 					
 					tbCourse.setBackgroundColor(Color.GREEN);
-					tvMoyenne.setText(getMoyenne() + "km/h");
 					Log.v(LogTag, Class + "Mode COURSE : OFF");
 				}
 			}
@@ -134,7 +143,7 @@ public class Application extends Activity implements LocationListener {
 		lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500l, 0, this);
 	}
 
-	
+
 	public float getSpeed()
 	{
 		if (actualLocation.hasSpeed() == true)
@@ -147,20 +156,6 @@ public class Application extends Activity implements LocationListener {
 		}
 	}
 	
-	public float getMoyenne()
-	{
-		float moyenne = 0;
-		
-		for (int i = 0; i < compteur; i++)
-		{
-			moyenne += vitesses[i];
-		}
-		
-		
-		moyenne /= compteur;
-		
-		return moyenne;
-	}
 
 	
 	public void onLocationChanged(Location location)
@@ -169,8 +164,12 @@ public class Application extends Activity implements LocationListener {
 		
 		if(modeCourse)
 		{
-			vitesses[compteur] = (getSpeed() * 36) / 10.0f;
-			compteur++;
+			maDate = new SimpleDateFormat("kk:mm:ss", Locale.FRANCE);
+			Aujourdhui = new Date();
+			xmlReadAndWrite.Write(xmlReadAndWrite.FormatPoint(	String.valueOf(maDate.format(Aujourdhui)),
+																String.valueOf((getSpeed()*36) / 10.0f),
+																String.valueOf(actualLocation.getLatitude()),
+																String.valueOf(actualLocation.getLongitude())));
 		}
 		
 		tvVitesse.setText( (int)(getSpeed() * 36) / 10.0f + " km/h" );
