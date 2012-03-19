@@ -29,10 +29,6 @@ import android.widget.ToggleButton;
  * @see Commande
  *
  */
-
-
-// 32 -> 31.06974
-// 43 -> 42.033412
 public class Application extends Activity implements LocationListener {
 	
 	/**
@@ -57,11 +53,7 @@ public class Application extends Activity implements LocationListener {
 		
 	private String LogTag = "Marathon Shell";
 	private String Class = "APPLICATION - ";
-	
-	//private static int compteur = 0;
-	
-	private float vitesses[];
-	
+		
 	private String nomFichier = "";
 	private SimpleDateFormat maDate;
 	private Date Aujourdhui;
@@ -75,8 +67,6 @@ public class Application extends Activity implements LocationListener {
 		setContentView(R.layout.application);
 		
 		xmlReadAndWrite = new XMLReadAndWrite();
-		
-		vitesses = new float[5000];
 						
 		lm = (LocationManager)getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
 		actualLocation = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -90,7 +80,7 @@ public class Application extends Activity implements LocationListener {
 		
 		tbCourse = (ToggleButton) findViewById(R.id.tbCourse);
 		tbCourse.setBackgroundColor(Color.GREEN);
-		
+				
 		
 		tbCourse.setOnClickListener(new ToggleButton.OnClickListener() {
 			public void onClick(View v) {
@@ -107,8 +97,7 @@ public class Application extends Activity implements LocationListener {
 					
 					Log.v(LogTag, Class + nomFichier);
 					
-					xmlReadAndWrite.OuvertureInput(getApplicationContext(), "monFichierXML.xml");
-					xmlReadAndWrite.OuvertureOutput(getApplicationContext(), "monFichierXML.xml");
+					xmlReadAndWrite.OuvertureOutput(getApplicationContext(), nomFichier);
 					xmlReadAndWrite.InsertionDebutFichier(maDate.format(Aujourdhui));
 					
 					tbCourse.setBackgroundColor(Color.RED);
@@ -117,9 +106,9 @@ public class Application extends Activity implements LocationListener {
 					modeCourse = false;
 
 					xmlReadAndWrite.InsertionFinFichier();
-					Log.w(LogTag, xmlReadAndWrite.Read());
 					xmlReadAndWrite.FermetureOutput(getApplicationContext());
-					xmlReadAndWrite.FermetureInput(getApplicationContext());
+					
+					xmlReadAndWrite.ParserXML(getApplicationContext(), nomFichier);
 					
 					tbCourse.setBackgroundColor(Color.GREEN);
 					Log.v(LogTag, Class + "Mode COURSE : OFF");

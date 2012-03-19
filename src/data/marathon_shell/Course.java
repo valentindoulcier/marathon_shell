@@ -28,11 +28,16 @@ public class Course {
 	@SuppressWarnings("unused")
 	private String Class = "COURSE - ";
 	
-	ArrayList<Point> ListePoints = new ArrayList<Point>();
+	ArrayList<Point> ListePoints;
 	
 	/****************************
 	 * CONSTRUCTEURS
 	 ****************************/
+	
+	public Course()
+	{
+		ListePoints = new ArrayList<Point>();
+	}
 	
 	
 	/****************************
@@ -44,21 +49,37 @@ public class Course {
 	 * METHODES
 	 ****************************/
 	
-	/*
+	public void AfficherListe()
+	{
+		for (int i = 0; i < ListePoints.size(); i++)
+		{
+			System.out.println("Valeur : " + ListePoints.get(i).getValue() + " Heure : " + ListePoints.get(i).getHeure() + " Vitesse : " + ListePoints.get(i).getVitesse() + " Latitude : " + ListePoints.get(i).getLatitude() + " Longitude : " + ListePoints.get(i).getLongitude());
+		}
+	}
+	
 	public float getMoyenne()
 	{
 		float moyenne = 0;
 		
-		for (int i = 0; i < compteur; i++)
+		for (int i = 0; i < ListePoints.size(); i++)
 		{
-			moyenne += vitesses[i];
+			moyenne += ListePoints.get(i).getVitesse();
 		}
 		
-		
-		moyenne /= compteur;
+		moyenne /= ListePoints.size();
 		
 		return moyenne;
 	}
-	*/
+	
+	public double getDistance()
+	{
+		double distance = 0;
+		
+		for (int i = 0; i < ListePoints.size(); i++)
+		{
+			distance += Math.sqrt(Math.pow(ListePoints.get(i).getLatitude() - ListePoints.get(i).getLatitude(), 2.0) + Math.pow(ListePoints.get(i).getLongitude() - ListePoints.get(i).getLongitude(), 2.0));
+		}		
+		return distance;
+	}
 
 }
