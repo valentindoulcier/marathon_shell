@@ -32,15 +32,13 @@ public final class R {
     }
     public static final class id {
         public static final int LinearLayout1=0x7f070004;
-        public static final int RelativeLayout1=0x7f070014;
+        public static final int RelativeLayout1=0x7f070012;
         public static final int bAccueil=0x7f070002;
         public static final int bCourse=0x7f07000a;
-        public static final int calendarView1=0x7f070012;
         public static final int cvCalendrier=0x7f070005;
         public static final int ecranCourse=0x7f070009;
         public static final int ecranDebrieffing=0x7f07000b;
         public static final int ecranDebrieffing1=0x7f07000f;
-        public static final int elListeFichiers=0x7f070013;
         public static final int etNomFichier=0x7f07000d;
         public static final int imageView1=0x7f070001;
         public static final int linearLayout2=0x7f070010;
@@ -48,18 +46,17 @@ public final class R {
         public static final int linearLayout4=0x7f07000c;
         public static final int linearLayout5=0x7f070003;
         public static final int lvListeFichiers=0x7f070007;
-        public static final int pbVitesse1=0x7f070015;
+        public static final int pbVitesse1=0x7f070013;
         public static final int spOptions=0x7f07000e;
-        public static final int tbCourse=0x7f070017;
+        public static final int tbCourse=0x7f070015;
         public static final int tvListeEvenements=0x7f070006;
         public static final int tvMoyenne=0x7f070011;
-        public static final int tvVitesse=0x7f070016;
+        public static final int tvVitesse=0x7f070014;
         public static final int vfListeEcrans=0x7f070008;
     }
     public static final class layout {
         public static final int accueil=0x7f030000;
-        public static final int analyse=0x7f030001;
-        public static final int course=0x7f030002;
+        public static final int course=0x7f030001;
     }
     public static final class string {
         public static final int accueil=0x7f060004;
