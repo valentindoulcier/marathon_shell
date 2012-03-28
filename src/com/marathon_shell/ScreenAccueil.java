@@ -1,18 +1,16 @@
 package com.marathon_shell;
-import component.marathon_shell.ExpandableListViewAdapter;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
+import component.marathon_shell.MyDialogProgress;
+
 import data.marathon_shell.Commande;
 import data.marathon_shell.Course;
 import data.marathon_shell.XMLReadAndWrite;
 import android.app.Activity;
-import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -57,7 +55,6 @@ public class ScreenAccueil extends Activity {
 	private TextView tvMoyenne;
 	
 	ListView lvListeFichiers;
-	ExpandableListViewAdapter adapter;
 	
 	private ArrayList<String> niveau;
 	private ArrayList<ArrayList<String>> sousNiveau;
@@ -73,6 +70,9 @@ public class ScreenAccueil extends Activity {
 
 	
 	HashMap<String, Course> hmCourses;
+	
+	//private ProgressDialog dialog;
+	private MyDialogProgress dialog;
 
 	
 	/** Called when the activity is first created. */
@@ -87,7 +87,16 @@ public class ScreenAccueil extends Activity {
 		PowerManager.WakeLock pmwl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, LogTag);
 		pmwl.acquire();
 		
-		showDialog(DIALOG);
+
+		cvCalendrier = (CalendarView) findViewById(R.id.cvCalendrier);
+		
+		
+		dialog = new MyDialogProgress(ScreenAccueil.this, cvCalendrier);
+		dialog.setTitle("Marathon Shell");
+		dialog.setMessage("Please wait while loading...");
+		dialog.setIndeterminate(true);
+		dialog.setCancelable(true);
+		
 		
 		xmlReadAndWrite = XMLReadAndWrite.getInstance();
 		
@@ -132,17 +141,7 @@ public class ScreenAccueil extends Activity {
 
 		});
 
-		cvCalendrier = (CalendarView) findViewById(R.id.cvCalendrier);
 		cvCalendrier.getContext().setTheme(R.style.CalendarBackGround);
-		
-		xmlReadAndWrite.ParserXMLFichiers(getApplicationContext(), niveau, sousNiveau);
-		Log.e(LogTag, "TAILLE DE NIVEAU " + niveau.size());
-				
-		for (int i = 0; i < sousNiveau.size(); i++)
-			for (int j = 0; j < sousNiveau.get(i).size(); j++)
-			{
-				hmCourses.put(sousNiveau.get(i).get(j), xmlReadAndWrite.ParserXMLCourse(getApplicationContext(), sousNiveau.get(i).get(j)));
-			}
 
 		cvCalendrier.setOnDateChangeListener(new OnDateChangeListener() {
 
@@ -170,10 +169,6 @@ public class ScreenAccueil extends Activity {
 			}
 		});
 
-		long today = cvCalendrier.getDate();
-		cvCalendrier.setDate(0);
-		cvCalendrier.setDate(today);
-
 		bCourse.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {
@@ -198,9 +193,32 @@ public class ScreenAccueil extends Activity {
 		});
 		
 		
-		dismissDialog(DIALOG);
-	}
 
+		Thread background1 = new Thread(new Runnable(){
+			public void run() {
+				xmlReadAndWrite.ParserXMLFichiers(getApplicationContext(), niveau, sousNiveau);
+				Log.e(LogTag, "TAILLE DE NIVEAU " + niveau.size());
+						
+				for (int i = 0; i < sousNiveau.size(); i++)
+					for (int j = 0; j < sousNiveau.get(i).size(); j++)
+					{
+						hmCourses.put(sousNiveau.get(i).get(j), xmlReadAndWrite.ParserXMLCourse(getApplicationContext(), sousNiveau.get(i).get(j)));
+					}
+				//afficheFin();
+				dialog.dismiss();
+			}
+		});
+
+		dialog.show();
+		background1.start();
+	}
+	/*
+	private void afficheFin() {
+		long today = cvCalendrier.getDate();
+		cvCalendrier.setDate(0);
+		cvCalendrier.setDate(today);
+	}*/
+	
 	@Override
 	protected void onPause()
 	{
@@ -255,14 +273,15 @@ public class ScreenAccueil extends Activity {
 		etNomFichier.setEnabled(false);
 	}
 	
+	/*
 	protected Dialog onCreateDialog(int id) {
 		ProgressDialog dialog = new ProgressDialog(this);
 		dialog.setTitle("Marathon Shell");
 		dialog.setMessage("Please wait while loading...");
 		dialog.setIndeterminate(true);
-		dialog.setCancelable(false);
+		dialog.setCancelable(true);
 		return dialog;
-    }
+    }*/
 
 }
 
