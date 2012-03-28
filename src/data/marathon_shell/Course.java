@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * 
  * @author Valentin DOULCIER
  * @version 1.0
- * @see Application
+ * @see ScreenAnalyse
  *
  */
 public class Course {
@@ -30,6 +30,9 @@ public class Course {
 	
 	ArrayList<Point> ListePoints;
 	
+	private String nomFichier;
+
+
 	/****************************
 	 * CONSTRUCTEURS
 	 ****************************/
@@ -44,6 +47,20 @@ public class Course {
 	 * ACCESSEURS
 	 ****************************/
 	
+	/**
+	 * @return the nomFichier
+	 */
+	public String getNomFichier() {
+		return nomFichier;
+	}
+
+
+	/**
+	 * @param nomFichier the nomFichier to set
+	 */
+	public void setNomFichier(String nomFichier) {
+		this.nomFichier = nomFichier;
+	}
 	
 	/****************************
 	 * METHODES

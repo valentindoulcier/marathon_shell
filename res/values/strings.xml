@@ -3,5 +3,9 @@
 
     <string name="hello">Hello World!</string>
     <string name="app_name">Marathon Shell</string>
+    <string name="modifier">Modifier</string>
+    <string name="supprimer">Supprimer</string>
+    <string name="accueil">Accueil</string>
+    <string name="liste">Liste d\'événements</string>
 
 </resources>

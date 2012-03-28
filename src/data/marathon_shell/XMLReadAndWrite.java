@@ -6,17 +6,21 @@ package data.marathon_shell;
 
 import android.content.Context;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
+import java.util.ArrayList;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -25,11 +29,14 @@ import android.widget.Toast;
  * 
  * @author Valentin DOULCIER
  * @version 1.0
- * @see Application
+ * @see ScreenAnalyse
  *
  */
 
-public class XMLReadAndWrite{
+public class XMLReadAndWrite {
+
+
+	private static XMLReadAndWrite instance = null;
 
 
 	/****************************
@@ -44,33 +51,127 @@ public class XMLReadAndWrite{
 	
 	private int compteur;
 	
+	private String pathCourses;
+	private String pathConfiguration;
+	
 	private FileInputStream fIn = null;
     private InputStreamReader isr = null;
     
     private FileOutputStream fOut = null;
     private OutputStreamWriter osw = null;
     
+    private ArrayList<String> listeFichiersNonParses;
+        
     
 	/****************************
 	 * CONSTRUCTEURS
 	 ****************************/
 	
-	public XMLReadAndWrite()
+	private XMLReadAndWrite()
 	{
-
+		listeFichiersNonParses = new ArrayList<String>();
 	}
+	
+	public static XMLReadAndWrite getInstance(){
+	      if(instance == null){
+	         instance = new XMLReadAndWrite();
+	      }
+	      return instance;
+	   }
 	
 	
 	/****************************
 	 * ACCESSEURS
 	 ****************************/
 	
+	/**
+	 * @return the listeFichiersNonParses
+	 */
+	public ArrayList<String> getListeFichiersNonParses() {
+		return listeFichiersNonParses;
+	}
+
+	/**
+	 * @param listeFichiersNonParses the listeFichiersNonParses to set
+	 */
+	public void setListeFichiersNonParses(ArrayList<String> listeFichiersNonParses) {
+		this.listeFichiersNonParses = listeFichiersNonParses;
+	}
+
+	/**
+	 * @return the pathCourses
+	 */
+	public String getPathCourses() {
+		return pathCourses;
+	}
+
+
+	/**
+	 * @param pathCourses the pathCourses to set
+	 */
+	public void setPathCourses(String pathCourses) {
+		this.pathCourses = pathCourses;
+	}
 	
 	
-	
+	/**
+	 * @return the pathConfiguration
+	 */
+	public String getPathConfiguration() {
+		return pathConfiguration;
+	}
+
+
+	/**
+	 * @param pathConfiguration the pathConfiguration to set
+	 */
+	public void setPathConfiguration(String pathConfiguration) {
+		this.pathConfiguration = pathConfiguration;
+	}
+
+
 	/****************************
 	 * METHODES
 	 ****************************/
+	
+	public void CreerArborescence()
+	{
+		//CREATION DU DOSSIER PRINCIPAL - MARATHON SHELL
+		File DossierMarathonShell = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Marathon_Shell");
+		DossierMarathonShell.mkdir();
+
+		//CREATION DU DOSSIER CONFIGURATION
+		File DossierConfiguration = new File(DossierMarathonShell.getPath(), "Configuration");
+		DossierConfiguration.mkdir();
+		setPathConfiguration(DossierConfiguration.getPath());
+
+		//CREATION DU DOSSIER COURSES
+		File DossierCourses = new File(DossierMarathonShell.getPath(), "Courses");
+		DossierCourses.mkdir();
+		setPathCourses(DossierCourses.getPath());
+	}
+	
+	public void AjouterCourse(Context context, String nomFichierConfig, String nomCourse, String date)
+	{
+	
+		//CREATION DU FICHIER CONFIGURATION
+		File FichierConfiguration = new File(getPathConfiguration(), nomFichierConfig);
+		OuvertureOutput(FichierConfiguration);
+		
+		if(!FichierConfiguration.exists())
+		{
+			Write("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
+		}
+		
+		Write(FormatFichier(nomCourse, date));
+		FermetureOutput(context);
+	}
+	
+	public String FormatFichier(String nomFichier, String date)
+	{
+		return "<fichier><date>" + date + "</date><nom>" + nomFichier + "</nom></fichier>\n";
+	}
+
 
 	public void OuvertureInput(Context context, String nomFichier)
 	{
@@ -81,6 +182,17 @@ public class XMLReadAndWrite{
         catch (Exception e) {
         	Log.e(LogTag, Class + "Erreur Ouverture Input");
         	Toast.makeText(context, "Erreur Ouverture Input",Toast.LENGTH_SHORT).show();
+        }
+	}
+	
+	public void OuvertureInput(File externalFilesDir)
+	{
+        try{
+        	fIn = new FileInputStream(externalFilesDir);
+        	isr = new InputStreamReader(fIn);
+        }
+        catch (Exception e) {
+        	Log.e(LogTag, Class + "Erreur Ouverture Input");
         }
 	}
 	
@@ -96,14 +208,25 @@ public class XMLReadAndWrite{
         	osw = new OutputStreamWriter(fOut);
         	
         	compteur = 0;
-        	Log.i(LogTag, Class + "avant ecriture");
         	Write("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
-        	Log.i(LogTag, Class + "apres ecriture");
         }
         catch (Exception e) {
         	Log.e(LogTag, Class + "Erreur Ouverture Output");
         	Toast.makeText(context, "Erreur Ouverture Output",Toast.LENGTH_SHORT).show();
         }
+	}
+
+	public void OuvertureOutput(File externalFilesDir) {
+		try {
+			fOut = new FileOutputStream(externalFilesDir, true);
+			osw = new OutputStreamWriter(fOut);
+			
+	    	compteur = 0;
+	    	
+		} catch (FileNotFoundException e) {
+        	Log.e(LogTag, Class + "Erreur Ouverture Output with File");
+		}
+		
 	}
 	
 	public void FermetureInput(Context context)
@@ -128,19 +251,29 @@ public class XMLReadAndWrite{
 		}
 	}
 	
-	public void InsertionDebutFichier(String date)
+	public void InsertionDebutFichierCourse(String date)
 	{
 		Write("<course value=\"" + date + "\">\n");
 		Write("<listePoints>\n");
 	}
 	
-	public void InsertionFinFichier()
+	public void InsertionFinFichierCourse()
 	{
 		Write("</listePoints>\n");
 		Write("<description>\n");
 		
 		Write("</description>\n");
 		Write("</course>");
+	}
+	
+	public void InsertionDebutFichierListeFichiers()
+	{
+		Write("<listeFichiers>\n");
+	}
+	
+	public void InsertionFinFichierListeFichiers()
+	{
+		Write("</listeFichiers>\n");
 	}
 	
 	public String FormatPoint(String heure, String vitesse, String latitude, String longitude)
@@ -174,9 +307,10 @@ public class XMLReadAndWrite{
 		return buf.toString();
 	}
 	
-	public void ParserXML(Context context, String nomFichier)
+	public Course ParserXMLCourse(Context context, String nomFichier)
 	{
-		OuvertureInput(context, nomFichier);
+		File FichierCourse = new File(pathCourses, nomFichier);
+		OuvertureInput(FichierCourse);
 		
 		XmlPullParserFactory factory;
 		Point monPoint = null;
@@ -198,8 +332,10 @@ public class XMLReadAndWrite{
 				
 				else if(eventType == XmlPullParser.START_TAG)
 				{
-					if(xpp.getName().equals("course")){ Log.w(LogTag, Class + " Course");
-						maCourse = new Course();}
+					if(xpp.getName().equals("course")){
+						maCourse = new Course();
+						maCourse.setNomFichier(nomFichier);
+					}
 					
 					else if(xpp.getName().equals("listePoints")) {}
 					
@@ -261,10 +397,95 @@ public class XMLReadAndWrite{
 		}
 		
 		System.out.println("End document");
-		maCourse.AfficherListe();
-		Log.e(LogTag, Class + "Nombre de points : " + maCourse.ListePoints.size());
+		//maCourse.AfficherListe();
 		
 		FermetureInput(context);
+		
+		return maCourse;
 	}
+	
+
+	public void ParserXMLFichiers(Context context, ArrayList<String> niveau, ArrayList<ArrayList<String>> sousNiveau)
+	{
+		File FichierConfiguration = new File(pathConfiguration, "ListeCourses.xml");
+		
+		if(FichierConfiguration.exists())
+		{
+			OuvertureInput(FichierConfiguration);
+
+			XmlPullParserFactory factory;
+
+			try
+			{
+				factory = XmlPullParserFactory.newInstance();
+				factory.setNamespaceAware(true);
+				XmlPullParser xpp = factory.newPullParser();
+
+				xpp.setInput(new StringReader(Read()));
+
+				int eventType = xpp.getEventType();
+				while (eventType != XmlPullParser.END_DOCUMENT)
+				{
+					if(eventType == XmlPullParser.START_DOCUMENT)
+						System.out.println("Start document");
+
+					else if(eventType == XmlPullParser.START_TAG)
+					{
+						if(xpp.getName().equals("listeFichiers")){}
+
+						else if(xpp.getName().equals("fichier"))
+						{}
+
+						else if(xpp.getName().equals("nom"))
+						{
+							eventType = xpp.next();
+							if(eventType == XmlPullParser.TEXT)
+							{
+								sousNiveau.get(niveau.size() - 1).add(xpp.getText());
+							}
+						}
+
+						else if(xpp.getName().equals("date"))
+						{
+							eventType = xpp.next();
+							if(eventType == XmlPullParser.TEXT)
+							{
+								if(!niveau.contains(xpp.getText()))
+								{
+									niveau.add(xpp.getText());
+									sousNiveau.add(new ArrayList<String>());
+								}
+							}
+						}
+					}
+
+					else if(eventType == XmlPullParser.END_TAG)
+					{
+						if(xpp.getName().equals("fichier"))
+						{
+							;
+						}
+					}
+
+					eventType = xpp.next();
+				}
+			}
+			catch (XmlPullParserException e)
+			{
+				e.printStackTrace();
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+
+			System.out.println("End document");
+
+			FermetureInput(context);
+		}
+	}
+
+
+	
 	
 }

@@ -9,7 +9,7 @@ package data.marathon_shell;
  * 
  * @author Valentin DOULCIER
  * @version 1.0
- * @see Application
+ * @see ScreenAnalyse
  *
  */
 

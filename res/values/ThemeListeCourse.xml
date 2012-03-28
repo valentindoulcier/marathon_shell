@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<style name="ListeBackGround">
+<item name="android:textStyle">italic</item>
+<item name="android:textColor">@color/Noir</item>
+<!-- <item name="android:background">@color/Gris</item>  -->
+</style>
+</resources>

@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="Noir">#000000</color>
+    <color name="Blanc">#ffffff</color>
+    <color name="Gris">#c3c3c3</color>
+    <color name="Bleu">#69b2eb</color>
+    <color name="Rouge">#ff0000</color>
+    <color name="Bleuu">#b3d4ff</color>
 
     
 </resources>
