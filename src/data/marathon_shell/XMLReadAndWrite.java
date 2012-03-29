@@ -167,6 +167,22 @@ public class XMLReadAndWrite {
 		FermetureOutput(context);
 	}
 	
+	public void MAJFichierListeCourse(Context context, String nomFichierConfig, String contenu)
+	{
+		//CREATION DU FICHIER CONFIGURATION
+		File FichierConfiguration = new File(getPathConfiguration(), nomFichierConfig);
+				
+		OuvertureOutputTRUNC(FichierConfiguration);
+		
+		if(!FichierConfiguration.exists())
+		{
+			Write("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
+		}
+		
+		Write(contenu);
+		FermetureOutput(context);
+	}
+	
 	public String FormatFichier(String nomFichier, String date)
 	{
 		return "<fichier><date>" + date + "</date><nom>" + nomFichier + "</nom></fichier>\n";
@@ -223,6 +239,17 @@ public class XMLReadAndWrite {
 			
 	    	compteur = 0;
 	    	
+		} catch (FileNotFoundException e) {
+        	Log.e(LogTag, Class + "Erreur Ouverture Output with File");
+		}
+		
+	}
+	
+	public void OuvertureOutputTRUNC(File externalFilesDir) {
+		try {
+			fOut = new FileOutputStream(externalFilesDir);
+			osw = new OutputStreamWriter(fOut);
+				    	
 		} catch (FileNotFoundException e) {
         	Log.e(LogTag, Class + "Erreur Ouverture Output with File");
 		}
@@ -327,14 +354,15 @@ public class XMLReadAndWrite {
 			int eventType = xpp.getEventType();
 			while (eventType != XmlPullParser.END_DOCUMENT)
 			{
-				if(eventType == XmlPullParser.START_DOCUMENT)
-					System.out.println("Start document");
+				if(eventType == XmlPullParser.START_DOCUMENT){}
+					//System.out.println("Start document");
 				
 				else if(eventType == XmlPullParser.START_TAG)
 				{
 					if(xpp.getName().equals("course")){
 						maCourse = new Course();
 						maCourse.setNomFichier(nomFichier);
+						maCourse.setDateCourse(xpp.getAttributeValue(0));
 					}
 					
 					else if(xpp.getName().equals("listePoints")) {}
@@ -396,7 +424,7 @@ public class XMLReadAndWrite {
 			e.printStackTrace();
 		}
 		
-		System.out.println("End document");
+		//System.out.println("End document");
 		//maCourse.AfficherListe();
 		
 		FermetureInput(context);
@@ -426,8 +454,8 @@ public class XMLReadAndWrite {
 				int eventType = xpp.getEventType();
 				while (eventType != XmlPullParser.END_DOCUMENT)
 				{
-					if(eventType == XmlPullParser.START_DOCUMENT)
-						System.out.println("Start document");
+					if(eventType == XmlPullParser.START_DOCUMENT){}
+						//System.out.println("Start document");
 
 					else if(eventType == XmlPullParser.START_TAG)
 					{
@@ -479,7 +507,7 @@ public class XMLReadAndWrite {
 				e.printStackTrace();
 			}
 
-			System.out.println("End document");
+			//System.out.println("End document");
 
 			FermetureInput(context);
 		}

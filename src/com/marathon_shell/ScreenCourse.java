@@ -116,7 +116,6 @@ public class ScreenCourse extends Activity implements LocationListener {
 				}
 			}
 		});
-		
 	}
 	
 	

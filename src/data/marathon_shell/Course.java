@@ -30,6 +30,7 @@ public class Course {
 	
 	ArrayList<Point> ListePoints;
 	
+	private String dateCourse;
 	private String nomFichier;
 
 
@@ -60,6 +61,21 @@ public class Course {
 	 */
 	public void setNomFichier(String nomFichier) {
 		this.nomFichier = nomFichier;
+	}
+	
+	/**
+	 * @return the dateCourse
+	 */
+	public String getDateCourse() {
+		return dateCourse;
+	}
+
+
+	/**
+	 * @param dateCourse the dateCourse to set
+	 */
+	public void setDateCourse(String dateCourse) {
+		this.dateCourse = dateCourse;
 	}
 	
 	/****************************

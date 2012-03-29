@@ -57,14 +57,34 @@
                 android:text="@string/liste"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textSize="25px" />
+
+            <RelativeLayout
+                android:id="@+id/relativeLayout1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.12"
+                android:background="@color/Bleuu" >
+
+                <ListView
+                    android:id="@+id/lvListeFichiers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="400dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_weight="1"
+                    android:background="@color/Bleuu"
+                    android:cacheColorHint="@color/Bleuu" >
 
-            <ListView
-                android:id="@+id/lvListeFichiers"
-                android:layout_width="wrap_content"
-                android:background="@color/Bleuu"
-                android:cacheColorHint="@color/Bleuu"
-                android:layout_height="397dp" >
-            </ListView>
+                </ListView>
+
+                <ImageView
+                    android:id="@+id/ivAucunEvenement"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/aucun_evenement" />
+
+            </RelativeLayout>
         </LinearLayout>
 
         <ViewFlipper

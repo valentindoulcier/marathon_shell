@@ -11,7 +11,9 @@ import data.marathon_shell.Commande;
 import data.marathon_shell.Course;
 import data.marathon_shell.XMLReadAndWrite;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PowerManager;
@@ -26,6 +28,7 @@ import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.CalendarView.OnDateChangeListener;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -48,6 +51,7 @@ public class ScreenAccueil extends Activity {
 	public static final int DIALOG = 0;
 
 	private String LogTag = "Marathon Shell";
+	@SuppressWarnings("unused")
 	private String Class = "ScreenAnalyse - ";
 	
 	private XMLReadAndWrite xmlReadAndWrite;
@@ -64,6 +68,8 @@ public class ScreenAccueil extends Activity {
 	private Button bAccueil;
 	private Button bCourse;
 	private Spinner spOptions;
+	
+	private ImageView ivAucunEvenement;
 	
 	private CalendarView cvCalendrier;
 	private String[] items = new String[] {"-- Choisir --", "Modifier la course", "Supprimer la course"};
@@ -107,7 +113,7 @@ public class ScreenAccueil extends Activity {
 		hmCourses = new HashMap<String, Course>();
 		
 		tvMoyenne = (TextView) findViewById(R.id.tvMoyenne);
-		
+		ivAucunEvenement = (ImageView) findViewById(R.id.ivAucunEvenement);
 		
 		etNomFichier = (EditText) findViewById(R.id.etNomFichier);
 		vfListeEcrans = (ViewFlipper) findViewById(R.id.vfListeEcrans);
@@ -130,7 +136,7 @@ public class ScreenAccueil extends Activity {
 				}
 				else if (arg2 == 2)
 				{
-					//Supprimer
+					supprimerCourse();
 				}
 				//Log.e(LogTag, Class + arg0.getItemAtPosition(arg2).toString());
 				spOptions.setSelection(0);
@@ -151,19 +157,28 @@ public class ScreenAccueil extends Activity {
 
 				if (niveau.contains(date))
 				{
+					ivAucunEvenement.setVisibility(View.INVISIBLE);
 					int indice = niveau.indexOf(date);
-					Log.w(LogTag, "J'ai des courses - " + indice);
 
 					ArrayList<String> nom = new ArrayList<String>();
 
 					for (int i = 0; i < sousNiveau.get(indice).size(); i++)
-						nom.add(hmCourses.get(sousNiveau.get(indice).get(i)).getNomFichier());
+					{
+						String name = hmCourses.get(sousNiveau.get(indice).get(i)).getNomFichier();
+						Log.w(LogTag, "Fichier : " + name);
+						name = name.substring(0, name.indexOf(".xml"));
+						String splitNom [] = name.split("_");
+						String splitDate [] = splitNom[1].split("-");
+						String splitHeure [] = splitNom[2].split("-");
+
+						nom.add(splitNom[0] + " du " + splitDate[2] + "-" + splitDate[1] + "-" + splitDate[0] + " à " + splitHeure[0] + "h" + splitHeure[1] + "m" + splitHeure[2] + "s");
+					}
 
 					lvListeFichiers.setAdapter(new ArrayAdapter<String>(ScreenAccueil.this, android.R.layout.simple_list_item_1, nom));
 				}
 				else
 				{
-					Log.w(LogTag, "J'ai pas de courses");
+					ivAucunEvenement.setVisibility(View.VISIBLE);
 					lvListeFichiers.setAdapter(new ArrayAdapter<String>(ScreenAccueil.this, android.R.layout.simple_list_item_1, new ArrayList<String>()));
 				}
 			}
@@ -181,7 +196,17 @@ public class ScreenAccueil extends Activity {
 		lvListeFichiers.setOnItemClickListener(new OnItemClickListener() {
 
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-				chargerData((String)lvListeFichiers.getItemAtPosition(position));
+				String tempo = (String)lvListeFichiers.getItemAtPosition(position);
+				String splitNom [] = tempo.split(" ");
+				String splitDate [] = splitNom[2].split("-");
+				String date = splitDate[2] + "-" + splitDate[1] + "-" + splitDate[0];
+				String resultat = splitNom[0] + "_" + date + "_";
+				resultat += splitNom[4].substring(0, splitNom[4].indexOf("h")) + "-";
+				resultat += splitNom[4].substring(splitNom[4].indexOf("h") + 1, splitNom[4].indexOf("m")) + "-";
+				resultat += splitNom[4].substring(splitNom[4].indexOf("m") + 1, splitNom[4].indexOf("s")) + ".xml";
+				Log.d(LogTag, "RESULTAT : " + resultat);
+				
+				chargerData(resultat);
 			}
 		});
 		
@@ -204,7 +229,6 @@ public class ScreenAccueil extends Activity {
 					{
 						hmCourses.put(sousNiveau.get(i).get(j), xmlReadAndWrite.ParserXMLCourse(getApplicationContext(), sousNiveau.get(i).get(j)));
 					}
-				//afficheFin();
 				dialog.dismiss();
 			}
 		});
@@ -212,12 +236,6 @@ public class ScreenAccueil extends Activity {
 		dialog.show();
 		background1.start();
 	}
-	/*
-	private void afficheFin() {
-		long today = cvCalendrier.getDate();
-		cvCalendrier.setDate(0);
-		cvCalendrier.setDate(today);
-	}*/
 	
 	@Override
 	protected void onPause()
@@ -231,9 +249,7 @@ public class ScreenAccueil extends Activity {
 		super.onResume();
 		
 		if (!xmlReadAndWrite.getListeFichiersNonParses().isEmpty())
-		{
-			Log.w(LogTag, "J'ai des courses Resume");
-			
+		{			
 			while(!xmlReadAndWrite.getListeFichiersNonParses().isEmpty())
 			{
 				hmCourses.put(xmlReadAndWrite.getListeFichiersNonParses().get(0), xmlReadAndWrite.ParserXMLCourse(getApplicationContext(), xmlReadAndWrite.getListeFichiersNonParses().get(0)));
@@ -244,15 +260,13 @@ public class ScreenAccueil extends Activity {
 				String nomFichier = maDate.format(Aujourdhui);
 				if(!niveau.contains(nomFichier))
 				{
-					Log.i(LogTag, Class + "nouveau niveau " + nomFichier);
+					//Log.i(LogTag, Class + "nouveau niveau " + nomFichier);
 					niveau.add(nomFichier);
 					sousNiveau.add(new ArrayList<String>());
 				}
-				
 				sousNiveau.get(niveau.size() - 1).add(xmlReadAndWrite.getListeFichiersNonParses().get(0));
 				xmlReadAndWrite.getListeFichiersNonParses().remove(0);
 			}
-
 			long today = cvCalendrier.getDate();
 			cvCalendrier.setDate(0);
 			cvCalendrier.setDate(today);
@@ -272,17 +286,70 @@ public class ScreenAccueil extends Activity {
 	{
 		etNomFichier.setEnabled(false);
 	}
-	
-	/*
-	protected Dialog onCreateDialog(int id) {
-		ProgressDialog dialog = new ProgressDialog(this);
-		dialog.setTitle("Marathon Shell");
-		dialog.setMessage("Please wait while loading...");
-		dialog.setIndeterminate(true);
-		dialog.setCancelable(true);
-		return dialog;
-    }*/
 
+	
+	protected void supprimerCourse() {
+		final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+		
+		alertDialog.setTitle("Confirmez-vous la demande de suppression ?!");
+		//alertDialog.setIcon(R.drawable.quitter);
+		alertDialog.setCanceledOnTouchOutside(true);
+		
+		alertDialog.setButton("Oui", new AlertDialog.OnClickListener() {
+			public void onClick(DialogInterface arg0, int arg1) {
+				String nomFic = etNomFichier.getText().toString();
+				String date = hmCourses.get(nomFic).getDateCourse();
+				String newFic = "";
+				int indiceNiveau = niveau.indexOf(hmCourses.get(nomFic).getDateCourse());
+				int indiceSSNiveau = sousNiveau.get(indiceNiveau).indexOf(nomFic);
+				
+				Log.v(LogTag, "Date : " + date + " INDICE niv : " + indiceNiveau + " INDICE ss-niv : " + indiceSSNiveau + " NOM : " + nomFic);
+				
+				if(hmCourses.remove(nomFic) != null	)
+					Log.v(LogTag,"JE SUPPRIME DANS hm LE FICHIER " + nomFic);
+				else
+					Log.v(LogTag,"JE SUPPRIME PAS DANS hm");			
+				
+				if(sousNiveau.get(indiceNiveau).remove(nomFic)){}
+					//Log.v(LogTag,"JE SUPPRIME DANS SN à l'indice " + indiceNiveau);
+				else {}
+					//Log.v(LogTag,"JE SUPPRIME PAS SN");
+				
+				if(sousNiveau.get(indiceNiveau).size() == 0)
+				{
+					//Log.w(LogTag, "SUPPRIMER COURSE - Je supprime le jour entier");
+					sousNiveau.remove(indiceNiveau);
+					niveau.remove(date);
+				}
+				
+				for (int i = 0; i < sousNiveau.size(); i++)
+					for (int j = 0; j < sousNiveau.get(i).size(); j++)
+					{
+						newFic += xmlReadAndWrite.FormatFichier(sousNiveau.get(i).get(j).toString(), niveau.get(i));
+					}
+				//Log.v(LogTag, "NEWFIC : " + newFic);
+				
+				xmlReadAndWrite.MAJFichierListeCourse(getApplicationContext(), "ListeCourses.xml", newFic);
+				
+				//deleteFile(nomFic);
+				//Log.d(LogTag, "Fichier : " + etNomFichier.getText());
+				
+				long today = cvCalendrier.getDate();
+				cvCalendrier.setDate(0);
+				cvCalendrier.setDate(today);
+				
+				vfListeEcrans.setDisplayedChild(0);
+			}
+		});
+		
+		alertDialog.setButton2("Non", new AlertDialog.OnClickListener() {
+			public void onClick(DialogInterface arg0, int arg1) {
+				alertDialog.cancel();
+			} 
+		});
+		alertDialog.show();		
+	}
+	
 }
 
 
