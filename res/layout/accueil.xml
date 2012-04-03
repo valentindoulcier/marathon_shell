@@ -5,9 +5,9 @@
     android:orientation="vertical" >
 
     <!-- android:background="" -->
-
-    <LinearLayout
-        android:id="@+id/linearLayout3"
+
+    <RelativeLayout
+        android:id="@+id/RelativeLayout1"
         android:layout_width="match_parent"
         android:layout_height="68dp"
         android:background="@color/Gris" >
@@ -16,37 +16,40 @@
             android:id="@+id/imageView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
             android:src="@drawable/ic_accueil" />
-
-
-
+
         <Button
             android:id="@+id/bAccueil"
             android:layout_width="223dp"
             android:layout_height="95dp"
-            android:layout_marginBottom="50dip"
-            android:layout_marginLeft="23px"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="24dp"
+            android:layout_toRightOf="@+id/imageView1"
             android:text="@string/accueil" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/linearLayout5"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
-
+
         <LinearLayout
             android:id="@+id/LinearLayout1"
             android:layout_width="337dp"
             android:layout_height="match_parent"
             android:orientation="vertical" >
-
+
             <CalendarView
                 android:id="@+id/cvCalendrier"
                 android:layout_width="match_parent"
                 android:layout_height="222dp"
-                android:layout_weight="0.12"/>
-            <TextView
+                android:layout_weight="0.12" />
+
+            <TextView
                 android:id="@+id/tvListeEvenements"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -57,14 +60,14 @@
                 android:text="@string/liste"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textSize="25px" />
-
+
             <RelativeLayout
                 android:id="@+id/relativeLayout1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.12"
                 android:background="@color/Bleuu" >
-
+
                 <ListView
                     android:id="@+id/lvListeFichiers"
                     android:layout_width="wrap_content"
@@ -74,16 +77,14 @@
                     android:layout_weight="1"
                     android:background="@color/Bleuu"
                     android:cacheColorHint="@color/Bleuu" >
-
                 </ListView>
-
+
                 <ImageView
                     android:id="@+id/ivAucunEvenement"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:src="@drawable/aucun_evenement" />
-
             </RelativeLayout>
         </LinearLayout>
 
@@ -108,7 +109,6 @@
                     android:layout_marginBottom="23dp"
                     android:layout_marginRight="32dp"
                     android:text="Button" />
-
             </RelativeLayout>
 
             <LinearLayout

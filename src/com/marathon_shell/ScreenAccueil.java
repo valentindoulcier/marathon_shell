@@ -7,7 +7,6 @@ import java.util.Locale;
 
 import component.marathon_shell.MyDialogProgress;
 
-import data.marathon_shell.Commande;
 import data.marathon_shell.Course;
 import data.marathon_shell.XMLReadAndWrite;
 import android.app.Activity;
@@ -36,49 +35,106 @@ import android.widget.ViewFlipper;
 
 
 /**
- * Classe Application, définie l'écran principal de l'application.
+ * Classe ScreenAccueil
+ * Cette classe définie l'écran principal de l'application. Elle contient tout ce qui touche à l'analyse des backups.
  * 
- * @author Valentin DOULCIER
+ * @author  Valentin DOULCIER
  * @version 1.0
- * @see Commande
- *
+ * @see     XMLReadAndWrite
  */
 public class ScreenAccueil extends Activity {
 	
 	/**
-	 * On déclare un nouvel objet Commande grace auquel on pourra accéder aux méthodes présentent dans cette classe.
+	 * On déclare une chaine LogTag à utiliser en tant que premier paramètre d'un Log.
 	 */
-	public static final int DIALOG = 0;
-
 	private String LogTag = "Marathon Shell";
-	@SuppressWarnings("unused")
+	/**
+	 * On déclare une chaine Class à utiliser en tant que second paramètre d'un Log.
+	 */
 	private String Class = "ScreenAnalyse - ";
 	
+	/**
+	 * On déclare un nouvel objet XMLReadAndWrite. Celui-ci étant un singleton, ne pas faire de new mais utiliser un getInstance().
+	 */
 	private XMLReadAndWrite xmlReadAndWrite;
 	
-	private TextView tvMoyenne;
+	/**
+	 * On déclare une nouvelle instance qui est appellée à la fin du thread initial.
+	 */
+	private MyDialogProgress dialog;
 	
-	ListView lvListeFichiers;
 	
-	private ArrayList<String> niveau;
-	private ArrayList<ArrayList<String>> sousNiveau;
+	//////////////////////////// Ecran général //////////////////////////////////
 	
-	private EditText etNomFichier;
+	/**
+	 * On déclare un ViewFlipper qui va servir à switcher d'écran entre l'écran d'accueil et celui du récapitulatif d'une course.
+	 */
 	private ViewFlipper vfListeEcrans;
+	
+	/**
+	 * On déclare un Button qui permet de revenir sur l'écran d'accueil.
+	 */
 	private Button bAccueil;
+	
+	/**
+	 * On déclare un Button qui permet de lancer une nouvelle course. Le clique sur ce bouton déclare une nouvelle activité (ScreenCourse).
+	 */
 	private Button bCourse;
+	
+	/**
+	 * On déclare un HashMap qui sera remplit dans le onCreate(), il va contenir toutes les courses, la clé sera le nom du fichier.
+	 */
+	private HashMap<String, Course> hmCourses;
+	
+	
+	//////////////////////////// Détail d'une course //////////////////////////////////
+	
+	/**
+	 * On déclare un EditText pour afficher le nom du fichier traité.
+	 */
+	private EditText etNomFichier;
+	
+	/**
+	 * On déclare un Spinner qui va proposer les options concernant la course (Modification - Suppression).
+	 */
 	private Spinner spOptions;
 	
+	/**
+	 * On déclare un tableau de String qui va contenir les champs de la spinner.
+	 */
+	private String[] items = new String[] {"-- Choisir --", "Modifier la course", "Supprimer la course"};
+	
+	/**
+	 * On déclare un TextView pour afficher la vitesse moyenne de la course.
+	 */
+	private TextView tvMoyenne;
+	
+	/**
+	 * On déclare un ListView qui va contenir toutes les courses du jour choisit.
+	 */
+	private ListView lvListeFichiers;
+	
+	/**
+	 * On déclare un ImageView qui affiche une image "Aucun événement" en cas de liste vide.
+	 */
 	private ImageView ivAucunEvenement;
 	
+	/**
+	 * On déclare un ArrayList de String qui va contenir toutes les dates auxquelles on a des courses sous la forme "23-3-2012".
+	 */
+	private ArrayList<String> niveau;
+	
+	/**
+	 * On déclare un double tableau (ArrayList dans ArrayList) qui va, pour chaque jour présent dans l'Arraylist niveau, contenir la liste de toutes les courses associées (le nom du fichier).
+	 */
+	private ArrayList<ArrayList<String>> sousNiveau;
+	
+	/**
+	 * On déclare un CalendatView qui va servir à sélectionner un jour pour la recherche d'une course.
+	 */
 	private CalendarView cvCalendrier;
-	private String[] items = new String[] {"-- Choisir --", "Modifier la course", "Supprimer la course"};
 
-	
-	HashMap<String, Course> hmCourses;
-	
-	//private ProgressDialog dialog;
-	private MyDialogProgress dialog;
+		
 
 	
 	/** Called when the activity is first created. */
@@ -87,77 +143,126 @@ public class ScreenAccueil extends Activity {
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.accueil);
-		// Bloque la mise ne veille du téléphone pour éviter les déconnections involontaires
-		// lors de l'appel de la méthode onPause()
+		
+		/**
+		 * Ici, on va bloquer la mise en veille de la tablette pour éviter les déconnections involontaires.
+		 * Ceci nécessite la déclaration d'une permission dans le manifest !!
+		 */
 		PowerManager pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
 		PowerManager.WakeLock pmwl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, LogTag);
 		pmwl.acquire();
 		
-
+		
+		/**
+		 * On récupére l'instance du singleton XMLReadAndWrite.
+		 */
+		xmlReadAndWrite = XMLReadAndWrite.getInstance();
+		
+		/**
+		 * On créé l'arborescence des dossiers sur la carte mémoire.
+		 */
+		xmlReadAndWrite.CreerArborescence();
+		
+		
+		/**
+		 * On va associer chaque objet déclaré à l'objet graphique contenu dans le layout.
+		 */
+		
+		bCourse = (Button) findViewById(R.id.bCourse);
+		
+		bAccueil = (Button) findViewById(R.id.bAccueil);
+		
+		spOptions = (Spinner) findViewById(R.id.spOptions);
+		
+		tvMoyenne = (TextView) findViewById(R.id.tvMoyenne);
+		
+		etNomFichier = (EditText) findViewById(R.id.etNomFichier);
+		
 		cvCalendrier = (CalendarView) findViewById(R.id.cvCalendrier);
 		
+		vfListeEcrans = (ViewFlipper) findViewById(R.id.vfListeEcrans);
+		
+		lvListeFichiers = (ListView) findViewById(R.id.lvListeFichiers);
+		
+		ivAucunEvenement = (ImageView) findViewById(R.id.ivAucunEvenement);
+		
+			
+		/**
+		 * On initialise plusieurs variables dont on a besoin.
+		 */
+		
+		niveau = new ArrayList<String>();
+		
+		hmCourses = new HashMap<String, Course>();
+		
+		sousNiveau = new ArrayList<ArrayList<String>>();
 		
 		dialog = new MyDialogProgress(ScreenAccueil.this, cvCalendrier);
+		
+		ArrayAdapter<String> spAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, items);
+		
+		
+		
+		/**
+		 * On associe éventuellement des propriétés à nos éléments graphiques
+		 */
+		
 		dialog.setTitle("Marathon Shell");
 		dialog.setMessage("Please wait while loading...");
 		dialog.setIndeterminate(true);
 		dialog.setCancelable(true);
 		
-		
-		xmlReadAndWrite = XMLReadAndWrite.getInstance();
-		
-		xmlReadAndWrite.CreerArborescence();
-		niveau = new ArrayList<String>();
-		sousNiveau = new ArrayList<ArrayList<String>>();
-		
-		hmCourses = new HashMap<String, Course>();
-		
-		tvMoyenne = (TextView) findViewById(R.id.tvMoyenne);
-		ivAucunEvenement = (ImageView) findViewById(R.id.ivAucunEvenement);
-		
-		etNomFichier = (EditText) findViewById(R.id.etNomFichier);
-		vfListeEcrans = (ViewFlipper) findViewById(R.id.vfListeEcrans);
-		bAccueil = (Button) findViewById(R.id.bAccueil);
-		bCourse = (Button) findViewById(R.id.bCourse);
-		
-		lvListeFichiers = (ListView) findViewById(R.id.lvListeFichiers);
 		lvListeFichiers.getContext().setTheme(R.style.ListeBackGround);
 		
-		spOptions = (Spinner) findViewById(R.id.spOptions);
-		ArrayAdapter<String> spAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, items);
 		spAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spOptions.setAdapter(spAdapter);
 		
+		cvCalendrier.getContext().setTheme(R.style.CalendarBackGround);
+		
+		
+		
+		///////////////////// Ensemble des LISTENERS //////////////////////////
+		
+		
+		/**
+		 * Listener de la spinner.
+		 * 
+		 * Choix 1 : MODIFIER : On appelle la fonction qui enable tous les champs.
+		 * Choix 2 : SUPPRIMER : On appelle la fonction qui propose la suppression de la course
+		 */
 		spOptions.setOnItemSelectedListener(new OnItemSelectedListener() {
 			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 				if (arg2 == 1)
 				{
-					//Modifier
+					Log.v(LogTag, Class + "Choix spinner : MODIFIER");
+					deverouillerData();
 				}
 				else if (arg2 == 2)
 				{
+					Log.v(LogTag, Class + "Choix spinner : SUPPRIMER");
 					supprimerCourse();
 				}
-				//Log.e(LogTag, Class + arg0.getItemAtPosition(arg2).toString());
 				spOptions.setSelection(0);
 			}
 			public void onNothingSelected(AdapterView<?> arg0) {
 				//RIEN FAIRE
 			}
-
 		});
 
-		cvCalendrier.getContext().setTheme(R.style.CalendarBackGround);
-
+		
+		/**
+		 * Listener sur le calendrier.
+		 * La fonction instanciée est inSelectedDateChange, autrement dit, quand l'utilisateur change de jour.
+		 */
 		cvCalendrier.setOnDateChangeListener(new OnDateChangeListener() {
-
 			public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
-
 				String date = String.valueOf(dayOfMonth) + "-" + String.valueOf(month + 1) + "-" + String.valueOf(year);
 
+				//Si on a des courses à cette date, alors on les affiche dans a la liste.
 				if (niveau.contains(date))
 				{
 					ivAucunEvenement.setVisibility(View.INVISIBLE);
+					
 					int indice = niveau.indexOf(date);
 
 					ArrayList<String> nom = new ArrayList<String>();
@@ -165,7 +270,6 @@ public class ScreenAccueil extends Activity {
 					for (int i = 0; i < sousNiveau.get(indice).size(); i++)
 					{
 						String name = hmCourses.get(sousNiveau.get(indice).get(i)).getNomFichier();
-						Log.w(LogTag, "Fichier : " + name);
 						name = name.substring(0, name.indexOf(".xml"));
 						String splitNom [] = name.split("_");
 						String splitDate [] = splitNom[1].split("-");
@@ -176,6 +280,7 @@ public class ScreenAccueil extends Activity {
 
 					lvListeFichiers.setAdapter(new ArrayAdapter<String>(ScreenAccueil.this, android.R.layout.simple_list_item_1, nom));
 				}
+				//Si on n'a pas de courses pour ce jour, alors on affiche l'image.
 				else
 				{
 					ivAucunEvenement.setVisibility(View.VISIBLE);
@@ -184,17 +289,25 @@ public class ScreenAccueil extends Activity {
 			}
 		});
 
+		/**
+		 * Listener du bouton Course
+		 * On déclare une nouvelle instance et on démarre l'activité.
+		 */
 		bCourse.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {
+				Log.d(LogTag, Class + "Démarrage ScreenCourse activity");
 				Intent intent = new Intent(ScreenAccueil.this, ScreenCourse.class);
 				startActivity(intent);
 			}
 		});
 		
 		
+		/**
+		 * Listener sur les items de la liste
+		 * Lorsqu'on clique sur un item de la liste, alors on recompose le nom du fichier et on appelle la fonction chargerData(nomFichier).
+		 */
 		lvListeFichiers.setOnItemClickListener(new OnItemClickListener() {
-
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
 				String tempo = (String)lvListeFichiers.getItemAtPosition(position);
 				String splitNom [] = tempo.split(" ");
@@ -204,13 +317,18 @@ public class ScreenAccueil extends Activity {
 				resultat += splitNom[4].substring(0, splitNom[4].indexOf("h")) + "-";
 				resultat += splitNom[4].substring(splitNom[4].indexOf("h") + 1, splitNom[4].indexOf("m")) + "-";
 				resultat += splitNom[4].substring(splitNom[4].indexOf("m") + 1, splitNom[4].indexOf("s")) + ".xml";
-				Log.d(LogTag, "RESULTAT : " + resultat);
+				
+				Log.d(LogTag, Class + "Chargement de " + resultat);
 				
 				chargerData(resultat);
 			}
 		});
 		
 
+		/**
+		 * Listener du bouton accueil
+		 * On se contente de changer l'écran du ViewFlipper.
+		 */
 		bAccueil.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
 				vfListeEcrans.setDisplayedChild(0);
@@ -218,7 +336,10 @@ public class ScreenAccueil extends Activity {
 		});
 		
 		
-
+		/**
+		 * Thread qui va s'exécuter au démarrage de l'application.
+		 * Il a pour but de remplir le HashMap avec l'ensemble des courses. Pour celà, on parse le fichier qui contient la liste des courses.
+		 */
 		Thread background1 = new Thread(new Runnable(){
 			public void run() {
 				xmlReadAndWrite.ParserXMLFichiers(getApplicationContext(), niveau, sousNiveau);
@@ -233,16 +354,32 @@ public class ScreenAccueil extends Activity {
 			}
 		});
 
+		/**
+		 * Pendant le thread, on charge l'image de LOADING
+		 */
 		dialog.show();
+		
+		/**
+		 * On démarre le thread
+		 */
 		background1.start();
 	}
 	
+	
+	/**
+	 * Méthode onPause(), est appellée lorsque l'on change d'application. Elle n'est alors pas fermée, elle est en pause.
+	 */
 	@Override
 	protected void onPause()
 	{
 		super.onPause();
 	}
-
+	
+	
+	/**
+	 * Méthode onResume(), est appellée lorsque l'on revient sur l'application, que ce soit au démarrage ou suite à un onPause().
+	 * Dans notre cas, le onResume() est appelé lors de la fin de l'activité Course, on charge donc la nouvelle course dans la liste, et on met à jour la liste des fichiers.
+	 */
 	@Override
 	protected void onResume()
 	{
@@ -270,24 +407,45 @@ public class ScreenAccueil extends Activity {
 			long today = cvCalendrier.getDate();
 			cvCalendrier.setDate(0);
 			cvCalendrier.setDate(today);
+			
+			Log.v(LogTag, Class + "Course ajoutée avec succès");
 		}
 	}
 	
 	
+	/**
+	 * ChargerDate va afficher à l'écran l'ensemble des informations que l'on souhaite concernant la course (moyenne de vitesse, graphique, ...).
+	 * @param nomCourse Ce paramètre est le nom du fichier de la course.
+	 */
 	public void chargerData(String nomCourse)
 	{
 		vfListeEcrans.setDisplayedChild(1);
 		etNomFichier.setText(nomCourse);
-		tvMoyenne.setText(String.valueOf(hmCourses.get(nomCourse).getMoyenne()));
+		tvMoyenne.setText(String.valueOf(hmCourses.get(nomCourse).getDistance()));
 		verouillerData();
 	}
 	
+	/**
+	 * On disable chaque champ de cet écran pour protéger l'accès aux données.
+	 */
 	public void verouillerData()
 	{
 		etNomFichier.setEnabled(false);
 	}
+	
+	/**
+	 * On enable chaque champ de cet écran pour permettre la modification des données.
+	 */
+	public void deverouillerData()
+	{
+		etNomFichier.setEnabled(true);
+	}
 
 	
+	/**
+	 * Méthode qui permet de supprimer une course.
+	 * On met à jour la liste des courses et on réécris dans le fichier ListeCourses.xml
+	 */
 	protected void supprimerCourse() {
 		final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
 		
@@ -296,6 +454,7 @@ public class ScreenAccueil extends Activity {
 		alertDialog.setCanceledOnTouchOutside(true);
 		
 		alertDialog.setButton("Oui", new AlertDialog.OnClickListener() {
+			@SuppressWarnings("unused")
 			public void onClick(DialogInterface arg0, int arg1) {
 				String nomFic = etNomFichier.getText().toString();
 				String date = hmCourses.get(nomFic).getDateCourse();
@@ -303,21 +462,15 @@ public class ScreenAccueil extends Activity {
 				int indiceNiveau = niveau.indexOf(hmCourses.get(nomFic).getDateCourse());
 				int indiceSSNiveau = sousNiveau.get(indiceNiveau).indexOf(nomFic);
 				
-				Log.v(LogTag, "Date : " + date + " INDICE niv : " + indiceNiveau + " INDICE ss-niv : " + indiceSSNiveau + " NOM : " + nomFic);
+				//Log.v(LogTag, Class + "Date : " + date + " INDICE Niveau : " + indiceNiveau + " INDICE Sous-niveau : " + indiceSSNiveau + " NOM : " + nomFic);
 				
-				if(hmCourses.remove(nomFic) != null	)
-					Log.v(LogTag,"JE SUPPRIME DANS hm LE FICHIER " + nomFic);
-				else
-					Log.v(LogTag,"JE SUPPRIME PAS DANS hm");			
+				hmCourses.remove(nomFic);
 				
-				if(sousNiveau.get(indiceNiveau).remove(nomFic)){}
-					//Log.v(LogTag,"JE SUPPRIME DANS SN à l'indice " + indiceNiveau);
-				else {}
-					//Log.v(LogTag,"JE SUPPRIME PAS SN");
+				sousNiveau.get(indiceNiveau).remove(nomFic);
 				
 				if(sousNiveau.get(indiceNiveau).size() == 0)
 				{
-					//Log.w(LogTag, "SUPPRIMER COURSE - Je supprime le jour entier");
+					Log.d(LogTag, Class + "Suppression du jour entier dans Niveau");
 					sousNiveau.remove(indiceNiveau);
 					niveau.remove(date);
 				}
@@ -327,12 +480,10 @@ public class ScreenAccueil extends Activity {
 					{
 						newFic += xmlReadAndWrite.FormatFichier(sousNiveau.get(i).get(j).toString(), niveau.get(i));
 					}
-				//Log.v(LogTag, "NEWFIC : " + newFic);
 				
 				xmlReadAndWrite.MAJFichierListeCourse(getApplicationContext(), "ListeCourses.xml", newFic);
 				
-				//deleteFile(nomFic);
-				//Log.d(LogTag, "Fichier : " + etNomFichier.getText());
+				Log.d(LogTag, Class + "Suppression de la course " + nomFic);
 				
 				long today = cvCalendrier.getDate();
 				cvCalendrier.setDate(0);

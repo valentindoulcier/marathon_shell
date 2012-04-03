@@ -42,24 +42,43 @@ public class XMLReadAndWrite {
 	/****************************
 	 * VARIABLES
 	 ****************************/
-	
+
 	/**
-	 * Ces deux variables sont utilisées pour un affichage clair dans les Logs.
+	 * On déclare une chaine LogTag à utiliser en tant que premier paramètre d'un Log.
 	 */
 	private String LogTag = "Marathon Shell";
+	/**
+	 * On déclare une chaine Class à utiliser en tant que second paramètre d'un Log.
+	 */
 	private String Class = "XMLReadAndWrite - ";
 	
+	/**
+	 * Compteur qui s'autoincrémente, est utilisé dans la balise <point> en tant que attribut value.
+	 */
 	private int compteur;
 	
+	/**
+	 * Contient le chemin absolu vers les fichiers de courses.
+	 */
 	private String pathCourses;
+	
+	/**
+	 * Contient le chemin absolu vers le fichier ListeCourse.xml
+	 */
 	private String pathConfiguration;
 	
+	/**
+	 * Accesseurs aux fichiers
+	 */
 	private FileInputStream fIn = null;
     private InputStreamReader isr = null;
     
     private FileOutputStream fOut = null;
     private OutputStreamWriter osw = null;
     
+    /**
+     * Tableau des courses à ajouter.
+     */
     private ArrayList<String> listeFichiersNonParses;
         
     
@@ -67,11 +86,18 @@ public class XMLReadAndWrite {
 	 * CONSTRUCTEURS
 	 ****************************/
 	
+    /**
+     * Constructeur du singleton
+     */
 	private XMLReadAndWrite()
 	{
 		listeFichiersNonParses = new ArrayList<String>();
 	}
 	
+	/**
+	 * Récupère l'instance du singleton
+	 * @return
+	 */
 	public static XMLReadAndWrite getInstance(){
 	      if(instance == null){
 	         instance = new XMLReadAndWrite();
@@ -134,6 +160,9 @@ public class XMLReadAndWrite {
 	 * METHODES
 	 ****************************/
 	
+	/**
+	 * Fonction qui créé initialement l'arborescence des fichiers sur la carte mémoire de la tablette.
+	 */
 	public void CreerArborescence()
 	{
 		//CREATION DU DOSSIER PRINCIPAL - MARATHON SHELL
@@ -151,6 +180,14 @@ public class XMLReadAndWrite {
 		setPathCourses(DossierCourses.getPath());
 	}
 	
+	/**
+	 * Fonction qui ajoute une Course dans le fichier ListeCourse.xml
+	 * 
+	 * @param context
+	 * @param nomFichierConfig
+	 * @param nomCourse
+	 * @param date
+	 */
 	public void AjouterCourse(Context context, String nomFichierConfig, String nomCourse, String date)
 	{
 	
@@ -167,6 +204,13 @@ public class XMLReadAndWrite {
 		FermetureOutput(context);
 	}
 	
+	/**
+	 * Fonction qui met à jour la fichier ListeCourse.xml lors de la suppression d'une course.
+	 * 
+	 * @param context
+	 * @param nomFichierConfig
+	 * @param contenu
+	 */
 	public void MAJFichierListeCourse(Context context, String nomFichierConfig, String contenu)
 	{
 		//CREATION DU FICHIER CONFIGURATION
@@ -183,12 +227,25 @@ public class XMLReadAndWrite {
 		FermetureOutput(context);
 	}
 	
+	/**
+	 * Fonction qui formatte la chaine à écrire.
+	 * 
+	 * @param nomFichier
+	 * @param date
+	 * @return
+	 */
 	public String FormatFichier(String nomFichier, String date)
 	{
 		return "<fichier><date>" + date + "</date><nom>" + nomFichier + "</nom></fichier>\n";
 	}
 
 
+	/**
+	 * Ouverture d'un fichier INPUT grace à son nom.
+	 * 
+	 * @param context
+	 * @param nomFichier
+	 */
 	public void OuvertureInput(Context context, String nomFichier)
 	{
         try{
@@ -201,6 +258,11 @@ public class XMLReadAndWrite {
         }
 	}
 	
+	/**
+	 * Ouverture d'un fichier INPUT.
+	 * 
+	 * @param externalFilesDir
+	 */
 	public void OuvertureInput(File externalFilesDir)
 	{
         try{
@@ -212,6 +274,12 @@ public class XMLReadAndWrite {
         }
 	}
 	
+	/**
+	 * OUverture d'un fichier OUTPUT grace au nom du fichier.
+	 * 
+	 * @param context
+	 * @param nomFichier
+	 */
 	public void OuvertureOutput(Context context, String nomFichier)
 	{
         try{
@@ -232,6 +300,11 @@ public class XMLReadAndWrite {
         }
 	}
 
+	/**
+	 * Ouverture d'un fichier en OUTPUT.
+	 * 
+	 * @param externalFilesDir
+	 */
 	public void OuvertureOutput(File externalFilesDir) {
 		try {
 			fOut = new FileOutputStream(externalFilesDir, true);
@@ -245,6 +318,12 @@ public class XMLReadAndWrite {
 		
 	}
 	
+	/**
+	 * Ouverture d'un fichier en mode TRUNCATE
+	 * Nécessaire lors de la réécriture.
+	 * 
+	 * @param externalFilesDir
+	 */
 	public void OuvertureOutputTRUNC(File externalFilesDir) {
 		try {
 			fOut = new FileOutputStream(externalFilesDir);
@@ -256,6 +335,11 @@ public class XMLReadAndWrite {
 		
 	}
 	
+	/**
+	 * Fermeture d'un fichier INPUT.
+	 * 
+	 * @param context
+	 */
 	public void FermetureInput(Context context)
 	{
 		try {
@@ -267,6 +351,11 @@ public class XMLReadAndWrite {
 		}
 	}
 	
+	/**
+	 * Fermeture d'un fichier en OUTPUT.
+	 * 
+	 * @param context
+	 */
 	public void FermetureOutput(Context context)
 	{
 		try {
@@ -278,12 +367,20 @@ public class XMLReadAndWrite {
 		}
 	}
 	
+	/**
+	 * Fonction qui initialise le contenu du fichier.
+	 * 
+	 * @param date
+	 */
 	public void InsertionDebutFichierCourse(String date)
 	{
 		Write("<course value=\"" + date + "\">\n");
 		Write("<listePoints>\n");
 	}
 	
+	/**
+	 * Fonction qui finalise le contenu d'un fichier.
+	 */
 	public void InsertionFinFichierCourse()
 	{
 		Write("</listePoints>\n");
@@ -303,12 +400,26 @@ public class XMLReadAndWrite {
 		Write("</listeFichiers>\n");
 	}
 	
+	/**
+	 * Fonction qui formatte le contenu d'un fichier de course (formattage d'un point).
+	 * 
+	 * @param heure
+	 * @param vitesse
+	 * @param latitude
+	 * @param longitude
+	 * @return
+	 */
 	public String FormatPoint(String heure, String vitesse, String latitude, String longitude)
 	{
 		compteur++;
 		return "<point value=\"" + compteur + "\"><heure>" + heure + "</heure><vitesse>" + vitesse + "</vitesse><latitude>" + latitude + "</latitude><longitude>" + longitude + "</longitude></point>\n";
 	}
 	
+	/**
+	 * Fonction qui écrit la chaine data dans le fichier.
+	 * 
+	 * @param data
+	 */
 	public void Write(String data)
 	{
 		try {
@@ -319,6 +430,11 @@ public class XMLReadAndWrite {
 		}
 	}
 	
+	/**
+	 * Fonction qui lit le contenu d'un fichier.
+	 * 
+	 * @return
+	 */
 	public String Read()
 	{
 		BufferedReader reader = new BufferedReader(isr);
@@ -334,6 +450,14 @@ public class XMLReadAndWrite {
 		return buf.toString();
 	}
 	
+	/**
+	 * Fonction qui parse un fichier course en vue d'effectuer un traitement.
+	 * On remplit un objet de type course.
+	 * 
+	 * @param context
+	 * @param nomFichier
+	 * @return
+	 */
 	public Course ParserXMLCourse(Context context, String nomFichier)
 	{
 		File FichierCourse = new File(pathCourses, nomFichier);
@@ -432,7 +556,13 @@ public class XMLReadAndWrite {
 		return maCourse;
 	}
 	
-
+	/**
+	 * Fonction qui parse le fichier ListeFichier.xml en vue de récupérer la liste des courses (affichage dans la liste).
+	 * 
+	 * @param context
+	 * @param niveau
+	 * @param sousNiveau
+	 */
 	public void ParserXMLFichiers(Context context, ArrayList<String> niveau, ArrayList<ArrayList<String>> sousNiveau)
 	{
 		File FichierConfiguration = new File(pathConfiguration, "ListeCourses.xml");

@@ -24,18 +24,20 @@ public final class R {
         public static final int auroralized_aqua_dock=0x7f020002;
         public static final int ic_accueil=0x7f020003;
         public static final int ic_launcher=0x7f020004;
-        public static final int ic_sortie=0x7f020005;
-        public static final int logo_eco_marathon_shell=0x7f020006;
-        public static final int route66=0x7f020007;
-        public static final int routes66=0x7f020008;
-        public static final int routes661=0x7f020009;
-        public static final int routes662=0x7f02000a;
+        public static final int ic_launcher_settings=0x7f020005;
+        public static final int ic_sortie=0x7f020006;
+        public static final int logo_eco_marathon_shell=0x7f020007;
+        public static final int route66=0x7f020008;
+        public static final int routes66=0x7f020009;
+        public static final int routes661=0x7f02000a;
+        public static final int routes662=0x7f02000b;
     }
     public static final class id {
         public static final int LinearLayout1=0x7f070004;
-        public static final int RelativeLayout1=0x7f070014;
+        public static final int RelativeLayout1=0x7f070000;
         public static final int bAccueil=0x7f070002;
         public static final int bCourse=0x7f07000c;
+        public static final int chCompteARebours=0x7f070017;
         public static final int cvCalendrier=0x7f070005;
         public static final int ecranCourse=0x7f07000b;
         public static final int ecranDebrieffing=0x7f07000d;
@@ -44,17 +46,16 @@ public final class R {
         public static final int imageView1=0x7f070001;
         public static final int ivAucunEvenement=0x7f070009;
         public static final int linearLayout2=0x7f070012;
-        public static final int linearLayout3=0x7f070000;
         public static final int linearLayout4=0x7f07000e;
         public static final int linearLayout5=0x7f070003;
         public static final int lvListeFichiers=0x7f070008;
-        public static final int pbVitesse1=0x7f070015;
+        public static final int pbVitesse1=0x7f070016;
         public static final int relativeLayout1=0x7f070007;
         public static final int spOptions=0x7f070010;
-        public static final int tbCourse=0x7f070017;
+        public static final int tbCourse=0x7f070014;
         public static final int tvListeEvenements=0x7f070006;
         public static final int tvMoyenne=0x7f070013;
-        public static final int tvVitesse=0x7f070016;
+        public static final int tvVitesse=0x7f070015;
         public static final int vfListeEcrans=0x7f07000a;
     }
     public static final class layout {

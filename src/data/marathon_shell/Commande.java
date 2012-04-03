@@ -1,5 +1,5 @@
 /**
- * 
+ * USELESS !!!!!!!!!!!!!!!!!!
  */
 package data.marathon_shell;
 

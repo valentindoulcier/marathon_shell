@@ -5,9 +5,12 @@ package data.marathon_shell;
 
 import java.util.ArrayList;
 
+import android.util.Log;
+
 
 /**
- * Classe contenant les fonctions principales utilisées par l'application.
+ * Classe Course
+ * Elle contient les fonctions principales utilisées par l'application.
  * 
  * @author Valentin DOULCIER
  * @version 1.0
@@ -23,9 +26,7 @@ public class Course {
 	/**
 	 * Ces deux variables sont utilisées pour un affichage clair dans les Logs.
 	 */
-	@SuppressWarnings("unused")
 	private String LogTag = "Marathon Shell";
-	@SuppressWarnings("unused")
 	private String Class = "COURSE - ";
 	
 	ArrayList<Point> ListePoints;
@@ -82,6 +83,9 @@ public class Course {
 	 * METHODES
 	 ****************************/
 	
+	/**
+	 * Fonction Debug
+	 */
 	public void AfficherListe()
 	{
 		for (int i = 0; i < ListePoints.size(); i++)
@@ -90,6 +94,10 @@ public class Course {
 		}
 	}
 	
+	/**
+	 * Fonction qui calcule la moyenne de la course this.
+	 * @return la vitesse
+	 */
 	public float getMoyenne()
 	{
 		float moyenne = 0;
@@ -104,14 +112,19 @@ public class Course {
 		return moyenne;
 	}
 	
+	/**
+	 * Fonction qui calcule la distance parcourue
+	 * @return la distance
+	 */
 	public double getDistance()
 	{
 		double distance = 0;
 		
-		for (int i = 0; i < ListePoints.size(); i++)
+		for (int i = 0; i < ListePoints.size() -1; i++)
 		{
-			distance += Math.sqrt(Math.pow(ListePoints.get(i).getLatitude() - ListePoints.get(i).getLatitude(), 2.0) + Math.pow(ListePoints.get(i).getLongitude() - ListePoints.get(i).getLongitude(), 2.0));
-		}		
+			distance += Math.sqrt(Math.pow(ListePoints.get(i+1).getLatitude() - ListePoints.get(i).getLatitude(), 2.0) + Math.pow(ListePoints.get(i+1).getLongitude() - ListePoints.get(i).getLongitude(), 2.0));
+		}
+		Log.e(LogTag, Class + distance);
 		return distance;
 	}
 
