@@ -29,10 +29,11 @@ public class Course {
 	private String LogTag = "Marathon Shell";
 	private String Class = "COURSE - ";
 	
-	ArrayList<Point> ListePoints;
+	private ArrayList<Point> ListePoints;
 	
 	private String dateCourse;
 	private String nomFichier;
+	private String description;
 
 
 	/****************************
@@ -49,6 +50,22 @@ public class Course {
 	 * ACCESSEURS
 	 ****************************/
 	
+	/**
+	 * @return the listePoints
+	 */
+	public ArrayList<Point> getListePoints() {
+		return ListePoints;
+	}
+
+
+	/**
+	 * @param listePoints the listePoints to set
+	 */
+	public void setListePoints(ArrayList<Point> listePoints) {
+		ListePoints = listePoints;
+	}
+
+
 	/**
 	 * @return the nomFichier
 	 */
@@ -77,6 +94,21 @@ public class Course {
 	 */
 	public void setDateCourse(String dateCourse) {
 		this.dateCourse = dateCourse;
+	}
+	
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	
 	/****************************

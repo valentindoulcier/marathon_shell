@@ -11,7 +11,7 @@ package data.marathon_shell;
  * @see ScreenAnalyse
  *
  */
-public class Point {
+public class Point implements Comparable<Object>{
 
 	
 	/****************************
@@ -110,6 +110,10 @@ public class Point {
 	 */
 	public void setHeure(String heure) {
 		this.heure = heure;
+	}
+
+	public int compareTo(Object another) {
+		return ((Float) this.getVitesse()).compareTo((((Point) another).getVitesse()));
 	}
 	
 	

@@ -1,11 +1,17 @@
 package com.marathon_shell;
+import component.marathon_shell.MyAudioPlayer;
+import component.marathon_shell.MyAudioRecorder;
+import component.marathon_shell.MyDialogProgress;
+import component.marathon_shell.MyGraphique;
+
+
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
-
-import component.marathon_shell.MyDialogProgress;
 
 import data.marathon_shell.Course;
 import data.marathon_shell.XMLReadAndWrite;
@@ -15,10 +21,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
 import android.os.PowerManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
+import android.widget.ImageButton;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -29,9 +40,13 @@ import android.widget.CalendarView.OnDateChangeListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SeekBar;
+import android.widget.SlidingDrawer;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
+import android.widget.ZoomControls;
 
 
 /**
@@ -95,6 +110,11 @@ public class ScreenAccueil extends Activity {
 	private EditText etNomFichier;
 	
 	/**
+	 * On déclare un EditText pour afficher la description de la course.
+	 */
+	private EditText etDescription;
+	
+	/**
 	 * On déclare un Spinner qui va proposer les options concernant la course (Modification - Suppression).
 	 */
 	private Spinner spOptions;
@@ -108,6 +128,10 @@ public class ScreenAccueil extends Activity {
 	 * On déclare un TextView pour afficher la vitesse moyenne de la course.
 	 */
 	private TextView tvMoyenne;
+	
+	private MyGraphique monGraphiqueVitesse;
+	
+	private ZoomControls zoomControls;
 	
 	/**
 	 * On déclare un ListView qui va contenir toutes les courses du jour choisit.
@@ -133,9 +157,28 @@ public class ScreenAccueil extends Activity {
 	 * On déclare un CalendatView qui va servir à sélectionner un jour pour la recherche d'une course.
 	 */
 	private CalendarView cvCalendrier;
+	
+	private SlidingDrawer sdAlert;
 
-		
-
+	private ImageButton ibRecording;
+	
+	private ImageView ivRondRouge;
+	
+	private ImageButton ibPlayRouge;
+	
+	private ImageButton ibPlayGris;
+	
+	private ImageButton ibStop;
+	
+	private SeekBar sbAudio;
+	
+	private MyAudioPlayer myAudioPlayer;
+	
+	private MyAudioRecorder myAudioRecorder;
+	
+    private final Handler handler = new Handler();
+	
+	private boolean test = false;
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -168,29 +211,51 @@ public class ScreenAccueil extends Activity {
 		 * On va associer chaque objet déclaré à l'objet graphique contenu dans le layout.
 		 */
 		
-		bCourse = (Button) findViewById(R.id.bCourse);
+		bCourse = (Button) findViewById(R.id.bCourse1);
 		
-		bAccueil = (Button) findViewById(R.id.bAccueil);
+		sbAudio = (SeekBar) findViewById(R.id.sbAudio);
+		
+		ibStop = (ImageButton) findViewById(R.id.ibStop);
+		
+		bAccueil = (Button) findViewById(R.id.bAccueil1);
 		
 		spOptions = (Spinner) findViewById(R.id.spOptions);
 		
 		tvMoyenne = (TextView) findViewById(R.id.tvMoyenne);
 		
+		sdAlert = (SlidingDrawer) findViewById(R.id.sdAlert1);
+		
+		ivRondRouge = (ImageView) findViewById(R.id.ivRondRouge);
+		
+		ibPlayGris = (ImageButton) findViewById(R.id.ibPlayGris);
+		
 		etNomFichier = (EditText) findViewById(R.id.etNomFichier);
 		
+		ibRecording = (ImageButton) findViewById(R.id.ibRecording);
+		
+		ibPlayRouge = (ImageButton) findViewById(R.id.ibPlayRouge);
+		
+		etDescription = (EditText) findViewById(R.id.etDescription);
+		
 		cvCalendrier = (CalendarView) findViewById(R.id.cvCalendrier);
+		
+		zoomControls = (ZoomControls) findViewById(R.id.zoomControls);
 		
 		vfListeEcrans = (ViewFlipper) findViewById(R.id.vfListeEcrans);
 		
 		lvListeFichiers = (ListView) findViewById(R.id.lvListeFichiers);
 		
 		ivAucunEvenement = (ImageView) findViewById(R.id.ivAucunEvenement);
+
+		monGraphiqueVitesse = (MyGraphique) findViewById(R.id.monGraphique);
+				
 		
-			
 		/**
 		 * On initialise plusieurs variables dont on a besoin.
 		 */
-		
+        
+        //monGraphiqueVitesse = new MyGraphique(getApplicationContext(), null);
+        		
 		niveau = new ArrayList<String>();
 		
 		hmCourses = new HashMap<String, Course>();
@@ -219,9 +284,94 @@ public class ScreenAccueil extends Activity {
 		
 		cvCalendrier.getContext().setTheme(R.style.CalendarBackGround);
 		
+		ivRondRouge.setVisibility(View.INVISIBLE);
+		
+		ibPlayRouge.setVisibility(View.INVISIBLE);
+		
+		ibStop.setEnabled(false);
+		
 		
 		
 		///////////////////// Ensemble des LISTENERS //////////////////////////
+		
+		ibPlayGris.setOnClickListener(new OnClickListener() {
+			
+			public void onClick(View v) {
+				String name = etNomFichier.getText().toString();
+				name = name.substring(0, name.indexOf(".xml"));
+				name += ".mp3";
+				File tempo = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/Marathon_Shell/Courses/" + name);
+				if(tempo.exists())
+				{
+					ibPlayRouge.setVisibility(View.VISIBLE);
+					
+					myAudioPlayer = new MyAudioPlayer(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/Marathon_Shell/Courses/" + name);
+					sbAudio.setMax(myAudioPlayer.getMediaPlayer().getDuration());
+				
+					startPlayProgressUpdater();
+					
+					ibStop.setEnabled(true);
+				}
+				else
+					Toast.makeText(getApplicationContext(), "Pas de fichiers son", Toast.LENGTH_SHORT).show();
+			}
+		});
+		
+		
+		ibStop.setOnClickListener(new OnClickListener() {
+			
+			public void onClick(View v) {
+				String name = etNomFichier.getText().toString();
+				name = name.substring(0, name.indexOf(".xml"));
+				name += ".mp3";
+				File tempo = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/Marathon_Shell/Courses/" + name);
+				if(tempo.exists())
+				{
+						ibPlayRouge.setVisibility(View.INVISIBLE);
+						myAudioPlayer.getMediaPlayer().stop();
+				}
+			}
+		});
+		
+		sbAudio.setOnTouchListener(new OnTouchListener() {
+
+			public boolean onTouch(View v, android.view.MotionEvent event) {
+				myAudioPlayer.seekChange(v);
+				return false;
+			}
+		});
+		
+		
+		ibRecording.setOnClickListener(new OnClickListener() {
+			
+			public void onClick(View v) {
+				if(!test)
+				{
+					test = true;
+					String name = etNomFichier.getText().toString();
+					name = name.substring(0, name.indexOf(".xml"));
+					myAudioRecorder = new MyAudioRecorder(name);
+					try {
+						ivRondRouge.setVisibility(View.VISIBLE);
+						myAudioRecorder.start();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				else
+				{
+					test = false;
+					try {
+						ivRondRouge.setVisibility(View.INVISIBLE);
+						myAudioRecorder.stop();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		});
 		
 		
 		/**
@@ -235,20 +385,26 @@ public class ScreenAccueil extends Activity {
 				if (arg2 == 1)
 				{
 					Log.v(LogTag, Class + "Choix spinner : MODIFIER");
-					deverouillerData();
+					//deverouillerData();
+					sdAlert.animateClose();
 				}
 				else if (arg2 == 2)
 				{
+					if(etDescription.isEnabled())
+					{
+						modifierCourse();
+					}
 					Log.v(LogTag, Class + "Choix spinner : SUPPRIMER");
-					supprimerCourse();
+					//supprimerCourse();
+					sdAlert.animateOpen();
 				}
-				spOptions.setSelection(0);
+				//spOptions.setSelection(0);
 			}
 			public void onNothingSelected(AdapterView<?> arg0) {
 				//RIEN FAIRE
 			}
 		});
-
+		
 		
 		/**
 		 * Listener sur le calendrier.
@@ -256,13 +412,19 @@ public class ScreenAccueil extends Activity {
 		 */
 		cvCalendrier.setOnDateChangeListener(new OnDateChangeListener() {
 			public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
+
+				if(spOptions.getSelectedItemPosition() == 1)
+				{
+					modifierCourse();
+				}
+
 				String date = String.valueOf(dayOfMonth) + "-" + String.valueOf(month + 1) + "-" + String.valueOf(year);
 
 				//Si on a des courses à cette date, alors on les affiche dans a la liste.
 				if (niveau.contains(date))
 				{
 					ivAucunEvenement.setVisibility(View.INVISIBLE);
-					
+
 					int indice = niveau.indexOf(date);
 
 					ArrayList<String> nom = new ArrayList<String>();
@@ -288,6 +450,7 @@ public class ScreenAccueil extends Activity {
 				}
 			}
 		});
+		
 
 		/**
 		 * Listener du bouton Course
@@ -309,6 +472,12 @@ public class ScreenAccueil extends Activity {
 		 */
 		lvListeFichiers.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+				
+				if(spOptions.getSelectedItemPosition() == 1)
+				{
+					modifierCourse();
+				}
+				
 				String tempo = (String)lvListeFichiers.getItemAtPosition(position);
 				String splitNom [] = tempo.split(" ");
 				String splitDate [] = splitNom[2].split("-");
@@ -319,7 +488,7 @@ public class ScreenAccueil extends Activity {
 				resultat += splitNom[4].substring(splitNom[4].indexOf("m") + 1, splitNom[4].indexOf("s")) + ".xml";
 				
 				Log.d(LogTag, Class + "Chargement de " + resultat);
-				
+
 				chargerData(resultat);
 			}
 		});
@@ -331,10 +500,47 @@ public class ScreenAccueil extends Activity {
 		 */
 		bAccueil.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
+				
+				if(spOptions.getSelectedItemPosition() == 1)
+				{
+					modifierCourse();
+				}
+				
 				vfListeEcrans.setDisplayedChild(0);
 			}
 		});
 		
+		
+		zoomControls.setOnZoomInClickListener(new OnClickListener() {
+			
+			public void onClick(View v) {
+				int zoom = 0;
+				zoom = monGraphiqueVitesse.getZoomLevel();
+				/** Si on est pas au zoom maximum (x8) on augmente le zoom i.e. x2 */
+				if (zoom != 8) 
+				{
+					monGraphiqueVitesse.setZoomLevel(zoom*2);
+					monGraphiqueVitesse.setLayoutParams(new LayoutParams(monGraphiqueVitesse.getTaille()*monGraphiqueVitesse.getZoomLevel(), LayoutParams.MATCH_PARENT));////////////////////////////////////////////////////////////////////
+					/* monGraphiqueVitesse.invalidate(); Il ne faut pas le faire car setLayoutParams fait déjà un appel
+					 * impplicite à invalidate() */
+				}
+			}
+		});
+		
+		zoomControls.setOnZoomOutClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				int zoom = 0;
+				zoom = monGraphiqueVitesse.getZoomLevel();
+				/** Si on est pas au zoom minimum (x1) on diminue le zoom i.e. /2 */
+				if (zoom != 1)
+				{
+					monGraphiqueVitesse.setZoomLevel(zoom/2);
+					monGraphiqueVitesse.setLayoutParams(new LayoutParams(monGraphiqueVitesse.getTaille()*monGraphiqueVitesse.getZoomLevel(), LayoutParams.MATCH_PARENT));////////////////////////////////////////////////////////////////////
+					/* monGraphiqueVitesse.invalidate(); Il ne faut pas le faire car setLayoutParams fait déjà un appel
+					 * impplicite à invalidate() */
+				}
+			}
+		});
 		
 		/**
 		 * Thread qui va s'exécuter au démarrage de l'application.
@@ -353,6 +559,7 @@ public class ScreenAccueil extends Activity {
 				dialog.dismiss();
 			}
 		});
+				
 
 		/**
 		 * Pendant le thread, on charge l'image de LOADING
@@ -420,8 +627,15 @@ public class ScreenAccueil extends Activity {
 	public void chargerData(String nomCourse)
 	{
 		vfListeEcrans.setDisplayedChild(1);
+		
 		etNomFichier.setText(nomCourse);
-		tvMoyenne.setText(String.valueOf(hmCourses.get(nomCourse).getDistance()));
+		
+		etDescription.setText(hmCourses.get(nomCourse).getDescription());
+		
+		tvMoyenne.setText(String.valueOf(hmCourses.get(nomCourse).getMoyenne()));
+		
+		monGraphiqueVitesse.setPoints(hmCourses.get(nomCourse).getListePoints());
+
 		verouillerData();
 	}
 	
@@ -431,6 +645,8 @@ public class ScreenAccueil extends Activity {
 	public void verouillerData()
 	{
 		etNomFichier.setEnabled(false);
+		
+		etDescription.setEnabled(false);
 	}
 	
 	/**
@@ -439,7 +655,25 @@ public class ScreenAccueil extends Activity {
 	public void deverouillerData()
 	{
 		etNomFichier.setEnabled(true);
+		
+		etDescription.setEnabled(true);
 	}
+	
+	public void startPlayProgressUpdater() {
+    	sbAudio.setProgress(myAudioPlayer.getMediaPlayer().getCurrentPosition());
+
+		if (myAudioPlayer.getMediaPlayer().isPlaying()) {
+			Runnable notification = new Runnable() {
+		        public void run() {
+		        	startPlayProgressUpdater();
+				}
+		    };
+		    handler.postDelayed(notification,1000);
+    	}else{
+    		myAudioPlayer.getMediaPlayer().pause();
+    		sbAudio.setProgress(0);
+    	}
+    } 
 
 	
 	/**
@@ -495,10 +729,55 @@ public class ScreenAccueil extends Activity {
 		
 		alertDialog.setButton2("Non", new AlertDialog.OnClickListener() {
 			public void onClick(DialogInterface arg0, int arg1) {
+				spOptions.setSelection(0);
 				alertDialog.cancel();
 			} 
 		});
 		alertDialog.show();		
+	}
+	
+	
+	
+	/**
+	 * Méthode qui permet de modifier une course.
+	 * On met à jour course, et on ré-écrit le fichier xml de la course.
+	 */
+	protected void modifierCourse() {
+		final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+		
+		alertDialog.setTitle("Voulez-vous enregitrer les modifications ?!");
+		//alertDialog.setIcon(R.drawable.quitter);
+		alertDialog.setCanceledOnTouchOutside(false);
+		
+		alertDialog.setButton("Oui", new AlertDialog.OnClickListener() {
+			@SuppressWarnings("unused")
+			public void onClick(DialogInterface arg0, int arg1) {
+				spOptions.setSelection(0);
+				String nomFic = etNomFichier.getText().toString();
+				String date = hmCourses.get(nomFic).getDateCourse();
+				String newFic = "";
+				int indiceNiveau = niveau.indexOf(hmCourses.get(nomFic).getDateCourse());
+				int indiceSSNiveau = sousNiveau.get(indiceNiveau).indexOf(nomFic);
+				
+				hmCourses.get(nomFic).setDescription(etDescription.getText().toString());
+				
+				//xmlReadAndWrite.MAJFichierListeCourse(getApplicationContext(), "ListeCourses.xml", newFic);
+				
+				Log.d(LogTag, Class + "Modification de la course " + nomFic);
+				
+				verouillerData();
+				//vfListeEcrans.setDisplayedChild(0);
+			}
+		});
+		
+		alertDialog.setButton2("Non", new AlertDialog.OnClickListener() {
+			public void onClick(DialogInterface arg0, int arg1) {
+				verouillerData();
+				spOptions.setSelection(0);
+				alertDialog.cancel();
+			} 
+		});
+		alertDialog.show();
 	}
 	
 }

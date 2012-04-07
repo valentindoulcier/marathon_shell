@@ -1,6 +1,3 @@
-/**
- * 
- */
 package data.marathon_shell;
 
 
@@ -332,7 +329,6 @@ public class XMLReadAndWrite {
 		} catch (FileNotFoundException e) {
         	Log.e(LogTag, Class + "Erreur Ouverture Output with File");
 		}
-		
 	}
 	
 	/**
@@ -491,7 +487,12 @@ public class XMLReadAndWrite {
 					
 					else if(xpp.getName().equals("listePoints")) {}
 					
-					else if(xpp.getName().equals("description")) {}
+					else if(xpp.getName().equals("description"))
+					{
+						eventType = xpp.next();
+						if(eventType == XmlPullParser.TEXT)
+							maCourse.setDescription(xpp.getText());
+					}
 
 					else if(xpp.getName().equals("point"))
 					{
@@ -532,7 +533,7 @@ public class XMLReadAndWrite {
 				{
 					if(xpp.getName().equals("point"))
 					{
-						maCourse.ListePoints.add(monPoint);
+						maCourse.getListePoints().add(monPoint);
 					}
 				}
 				

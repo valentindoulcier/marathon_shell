@@ -18,45 +18,91 @@ public final class R {
         public static final int Noir=0x7f050000;
         public static final int Rouge=0x7f050004;
     }
+    public static final class dimen {
+        public static final int graphHeight=0x7f080001;
+        public static final int graphWidth=0x7f080000;
+    }
     public static final class drawable {
         public static final int aucun_evenement=0x7f020000;
         public static final int auroralized_aqua=0x7f020001;
         public static final int auroralized_aqua_dock=0x7f020002;
-        public static final int ic_accueil=0x7f020003;
-        public static final int ic_launcher=0x7f020004;
-        public static final int ic_launcher_settings=0x7f020005;
-        public static final int ic_sortie=0x7f020006;
-        public static final int logo_eco_marathon_shell=0x7f020007;
-        public static final int route66=0x7f020008;
-        public static final int routes66=0x7f020009;
-        public static final int routes661=0x7f02000a;
-        public static final int routes662=0x7f02000b;
+        public static final int bg_tiroir=0x7f020003;
+        public static final int ic_accueil=0x7f020004;
+        public static final int ic_launcher=0x7f020005;
+        public static final int ic_launcher_settings=0x7f020006;
+        public static final int ic_launcher_soundrecorder=0x7f020007;
+        public static final int ic_sortie=0x7f020008;
+        public static final int idle_led=0x7f020009;
+        public static final int logo_eco_marathon_shell=0x7f02000a;
+        public static final int play_gris=0x7f02000b;
+        public static final int play_rouge=0x7f02000c;
+        public static final int record=0x7f02000d;
+        public static final int recording_led=0x7f02000e;
+        public static final int route66=0x7f02000f;
+        public static final int routes66=0x7f020010;
+        public static final int routes661=0x7f020011;
+        public static final int routes662=0x7f020012;
+        public static final int stop=0x7f020013;
+        public static final int vumeter=0x7f020014;
     }
     public static final class id {
-        public static final int LinearLayout1=0x7f070004;
-        public static final int RelativeLayout1=0x7f070000;
-        public static final int bAccueil=0x7f070002;
-        public static final int bCourse=0x7f07000c;
-        public static final int chCompteARebours=0x7f070017;
-        public static final int cvCalendrier=0x7f070005;
-        public static final int ecranCourse=0x7f07000b;
-        public static final int ecranDebrieffing=0x7f07000d;
-        public static final int ecranDebrieffing1=0x7f070011;
-        public static final int etNomFichier=0x7f07000f;
-        public static final int imageView1=0x7f070001;
-        public static final int ivAucunEvenement=0x7f070009;
-        public static final int linearLayout2=0x7f070012;
-        public static final int linearLayout4=0x7f07000e;
-        public static final int linearLayout5=0x7f070003;
-        public static final int lvListeFichiers=0x7f070008;
-        public static final int pbVitesse1=0x7f070016;
-        public static final int relativeLayout1=0x7f070007;
-        public static final int spOptions=0x7f070010;
-        public static final int tbCourse=0x7f070014;
-        public static final int tvListeEvenements=0x7f070006;
-        public static final int tvMoyenne=0x7f070013;
-        public static final int tvVitesse=0x7f070015;
-        public static final int vfListeEcrans=0x7f07000a;
+        public static final int LinearLayout1=0x7f090005;
+        public static final int RelativeLayout1=0x7f090001;
+        public static final int bAccueil1=0x7f090003;
+        public static final int bCourse1=0x7f09000d;
+        public static final int button1=0x7f09002f;
+        public static final int button2=0x7f090030;
+        public static final int chCompteARebours=0x7f090034;
+        public static final int content=0x7f09002d;
+        public static final int cvCalendrier=0x7f090006;
+        public static final int ecranCourse=0x7f09000c;
+        public static final int ecranDebrieffing=0x7f09000e;
+        public static final int ecranDebrieffing1=0x7f090012;
+        public static final int etDescription=0x7f090016;
+        public static final int etNomFichier=0x7f090010;
+        public static final int handle=0x7f09002e;
+        public static final int ibPlayGris=0x7f09001b;
+        public static final int ibPlayRouge=0x7f09001c;
+        public static final int ibRecording=0x7f090018;
+        public static final int ibStop=0x7f09001d;
+        public static final int imageView=0x7f090002;
+        public static final int ivAucunEvenement=0x7f09000a;
+        public static final int ivRondGris=0x7f090019;
+        public static final int ivRondRouge=0x7f09001a;
+        public static final int linearLayout2=0x7f090013;
+        public static final int linearLayout4=0x7f09000f;
+        public static final int llDistanceParcourue=0x7f090023;
+        public static final int llTempsEffectue=0x7f090026;
+        public static final int llVitesseMoyenne=0x7f090020;
+        public static final int lvListeFichiers=0x7f090009;
+        public static final int monGraphique=0x7f09002b;
+        public static final int pbVitesse1=0x7f090033;
+        public static final int relativeLayout2=0x7f090017;
+        public static final int relativeLayout3=0x7f090008;
+        public static final int relativeLayout4=0x7f090004;
+        public static final int rlAccueil=0x7f090000;
+        public static final int sbAudio=0x7f09001e;
+        public static final int sdAlert1=0x7f09002c;
+        public static final int spOptions=0x7f090011;
+        public static final int svGraphiqueVitesse=0x7f09002a;
+        public static final int tbCourse=0x7f090031;
+        public static final int textView1=0x7f090021;
+        public static final int textView2=0x7f090024;
+        public static final int textView3=0x7f090025;
+        public static final int textView4=0x7f090028;
+        public static final int textView5=0x7f090027;
+        public static final int tvChiffres=0x7f09001f;
+        public static final int tvDescription=0x7f090015;
+        public static final int tvListeEvenements=0x7f090007;
+        public static final int tvMoyenne=0x7f090022;
+        public static final int tvTitle=0x7f090014;
+        public static final int tvVitesse=0x7f090032;
+        public static final int vfListeEcrans=0x7f09000b;
+        public static final int zoomControls=0x7f090029;
+    }
+    public static final class integer {
+        public static final int graphHeight=0x7f070001;
+        public static final int graphWidth=0x7f070000;
     }
     public static final class layout {
         public static final int accueil=0x7f030000;
@@ -65,10 +111,17 @@ public final class R {
     public static final class string {
         public static final int accueil=0x7f060004;
         public static final int app_name=0x7f060001;
+        public static final int chiffre=0x7f060009;
+        public static final int description=0x7f060006;
+        public static final int descriptionHint=0x7f060007;
+        public static final int detail=0x7f060008;
+        public static final int distance=0x7f06000b;
         public static final int hello=0x7f060000;
         public static final int liste=0x7f060005;
         public static final int modifier=0x7f060002;
         public static final int supprimer=0x7f060003;
+        public static final int temps=0x7f06000c;
+        public static final int vitesse_moyenne=0x7f06000a;
     }
     public static final class style {
         /**  <item name="android:background">@color/Gris</item>  

@@ -7,5 +7,17 @@
     <string name="supprimer">Supprimer</string>
     <string name="accueil">Accueil</string>
     <string name="liste">Liste d\'événements</string>
-
+    <string name="description">Description de la course :</string>
+	<string name="descriptionHint">Entrez votre description ...</string>
+	
+    <item type="integer" name="graphWidth" format="integer">900</item>
+    <item type="integer" name="graphHeight" format="integer">500</item>
+    <dimen name="graphWidth">900dp</dimen>
+    <dimen name="graphHeight">500dp</dimen>
+    <string name="detail">Détail de la course :</string>
+    <string name="chiffre">La course en chiffres :</string>
+    <string name="vitesse_moyenne">Vitesse moyenne (km/h) : </string>
+    <string name="distance">Distance parcourue (m) : </string>
+    <string name="temps">Temps effectué (min) : </string>
+	
 </resources>

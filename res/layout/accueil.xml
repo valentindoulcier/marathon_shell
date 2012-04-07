@@ -1,46 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rlAccueil"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:gravity="top"
     android:orientation="vertical" >
 
     <!-- android:background="" -->
-
+
     <RelativeLayout
         android:id="@+id/RelativeLayout1"
         android:layout_width="match_parent"
         android:layout_height="68dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
         android:background="@color/Gris" >
 
         <ImageView
-            android:id="@+id/imageView1"
+            android:id="@+id/imageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:src="@drawable/ic_accueil" />
-
+
         <Button
-            android:id="@+id/bAccueil"
+            android:id="@+id/bAccueil1"
             android:layout_width="223dp"
             android:layout_height="95dp"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentTop="true"
-            android:layout_marginLeft="24dp"
-            android:layout_toRightOf="@+id/imageView1"
+            android:layout_marginLeft="33dp"
+            android:layout_toRightOf="@+id/imageView"
             android:text="@string/accueil" />
-
     </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/linearLayout5"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+    <RelativeLayout
+        android:id="@+id/relativeLayout4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/RelativeLayout1" >
 
         <LinearLayout
             android:id="@+id/LinearLayout1"
-            android:layout_width="337dp"
+            android:layout_width="350dp"
             android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
             android:orientation="vertical" >
 
             <CalendarView
@@ -53,7 +57,6 @@
                 android:id="@+id/tvListeEvenements"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:layout_weight="0.07"
                 android:background="@color/Bleu"
                 android:gravity="center"
@@ -62,18 +65,15 @@
                 android:textSize="25px" />
 
             <RelativeLayout
-                android:id="@+id/relativeLayout1"
-                android:layout_width="match_parent"
+                android:id="@+id/relativeLayout3"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.12"
                 android:background="@color/Bleuu" >
 
                 <ListView
                     android:id="@+id/lvListeFichiers"
                     android:layout_width="wrap_content"
                     android:layout_height="400dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
                     android:layout_weight="1"
                     android:background="@color/Bleuu"
                     android:cacheColorHint="@color/Bleuu" >
@@ -92,6 +92,7 @@
             android:id="@+id/vfListeEcrans"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_toRightOf="@+id/LinearLayout1"
             android:background="@color/Blanc" >
 
             <RelativeLayout
@@ -101,7 +102,7 @@
                 android:orientation="horizontal" >
 
                 <Button
-                    android:id="@+id/bCourse"
+                    android:id="@+id/bCourse1"
                     android:layout_width="252dp"
                     android:layout_height="153dp"
                     android:layout_alignParentBottom="true"
@@ -126,10 +127,7 @@
                         android:id="@+id/etNomFichier"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.87" >
-
-                        <requestFocus />
-                    </EditText>
+                        android:layout_weight="0.87" />
 
                     <Spinner
                         android:id="@+id/spOptions"
@@ -150,17 +148,260 @@
                         android:orientation="vertical" >
 
                         <TextView
-                            android:id="@+id/tvMoyenne"
+                            android:id="@+id/tvTitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Large Text"
+                            android:layout_marginLeft="10px"
+                            android:text="@string/detail"
                             android:textAppearance="?android:attr/textAppearanceLarge"
                             android:textColor="@color/Noir"
-                            android:textSize="50dip" />
+                            android:textSize="30px"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvDescription"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10px"
+                            android:layout_marginTop="20px"
+                            android:text="@string/description"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:textColor="@color/Noir"
+                            android:textSize="20px" />
+
+                        <EditText
+                            android:id="@+id/etDescription"
+                            android:layout_width="767dp"
+                            android:layout_height="150dp"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="10px"
+                            android:gravity="top|left"
+                            android:hint="@string/descriptionHint"
+                            android:inputType="none"
+                            android:textColorHint="@color/Gris"
+                            android:textIsSelectable="false" />
+
+                        <RelativeLayout
+                            android:id="@+id/relativeLayout2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" >
+
+                            <ImageButton
+                                android:id="@+id/ibRecording"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_launcher_soundrecorder" />
+
+                            <ImageView
+                                android:id="@+id/ivRondGris"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="177dp"
+                                android:layout_toRightOf="@+id/ibRecording"
+                                android:src="@drawable/record" />
+
+                            <ImageView
+                                android:id="@+id/ivRondRouge"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignRight="@+id/ivRondGris"
+                                android:layout_centerVertical="true"
+                                android:layout_marginRight="8px"
+                                android:src="@drawable/recording_led" />
+
+                            <ImageButton
+                                android:id="@+id/ibPlayGris"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="168dp"
+                                android:layout_toRightOf="@+id/ivRondGris"
+                                android:src="@drawable/play_gris" />
+
+                            <ImageButton
+                                android:id="@+id/ibPlayRouge"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignLeft="@+id/ibPlayGris"
+                                android:layout_alignTop="@+id/ibPlayGris"
+                                android:src="@drawable/play_rouge" />
+
+                            <ImageButton
+                                android:id="@+id/ibStop"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="113dp"
+                                android:layout_toRightOf="@+id/ibPlayGris"
+                                android:src="@drawable/stop" />
+
+                            <SeekBar
+                                android:id="@+id/sbAudio"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="36dp"
+                                android:layout_toRightOf="@+id/ibStop" />
+
+                        </RelativeLayout>
+
+                        <TextView
+                            android:id="@+id/tvChiffres"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10px"
+                            android:layout_marginTop="20px"
+                            android:text="@string/chiffre"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:textColor="@color/Noir"
+                            android:textSize="20px" />
+
+                        <LinearLayout
+                            android:id="@+id/llVitesseMoyenne"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="50dp"
+                            android:layout_marginTop="10px" >
+
+                            <TextView
+                                android:id="@+id/textView1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/vitesse_moyenne"
+                                android:textAppearance="?android:attr/textAppearanceMedium"
+                                android:textColor="@color/Noir"
+                                android:textSize="25px" />
+
+                            <TextView
+                                android:id="@+id/tvMoyenne"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Medium Text"
+                                android:textAppearance="?android:attr/textAppearanceMedium"
+                                android:textColor="@color/Noir"
+                                android:textSize="25px" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/llDistanceParcourue"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="50dp" >
+
+                            <TextView
+                                android:id="@+id/textView2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/distance"
+                                android:textAppearance="?android:attr/textAppearanceMedium"
+                                android:textColor="@color/Noir"
+                                android:textSize="25px" />
+
+                            <TextView
+                                android:id="@+id/textView3"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Medium Text"
+                                android:textAppearance="?android:attr/textAppearanceMedium"
+                                android:textColor="@color/Noir"
+                                android:textSize="25px" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/llTempsEffectue"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="50dp" >
+
+                            <TextView
+                                android:id="@+id/textView5"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/temps"
+                                android:textAppearance="?android:attr/textAppearanceMedium"
+                                android:textColor="@color/Noir"
+                                android:textSize="25px" />
+
+                            <TextView
+                                android:id="@+id/textView4"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Medium Text"
+                                android:textAppearance="?android:attr/textAppearanceMedium"
+                                android:textColor="@color/Noir"
+                                android:textSize="25px" />
+                        </LinearLayout>
+
+                        <ZoomControls
+                            android:id="@+id/zoomControls"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <HorizontalScrollView
+                            android:id="@+id/svGraphiqueVitesse"
+                            android:layout_width="match_parent"
+                            android:layout_height="500dp" >
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="fill_parent"
+                                android:orientation="horizontal" >
+
+                                <component.marathon_shell.MyGraphique
+                                    android:id="@+id/monGraphique"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:minWidth="@dimen/graphWidth" />
+                            </LinearLayout>
+                        </HorizontalScrollView>
                     </LinearLayout>
                 </ScrollView>
             </LinearLayout>
         </ViewFlipper>
-    </LinearLayout>
+    </RelativeLayout>
+
+    <SlidingDrawer
+        android:id="@+id/sdAlert1"
+        android:layout_width="500px"
+        android:layout_height="300px"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:content="@+id/content"
+        android:handle="@+id/handle" >
 
-</LinearLayout>
+        <RelativeLayout
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_tiroir"
+            android:gravity="top" >
+
+            <Button
+                android:id="@+id/button1"
+                android:layout_width="110dp"
+                android:layout_height="50dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_gravity="bottom"
+                android:text="Button" />
+
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="110dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/button1"
+                android:layout_alignParentBottom="true"
+                android:layout_gravity="bottom"
+                android:layout_toRightOf="@+id/button1"
+                android:text="Button" />
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/handle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_accueil" />
+    </SlidingDrawer>
+
+</RelativeLayout>
