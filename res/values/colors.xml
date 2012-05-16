@@ -2,10 +2,11 @@
 <resources>
     <color name="Noir">#000000</color>
     <color name="Blanc">#ffffff</color>
-    <color name="Gris">#c3c3c3</color>
+    <color name="Gris">#d9d9d9</color>
     <color name="Bleu">#69b2eb</color>
     <color name="Rouge">#ff0000</color>
     <color name="Bleuu">#b3d4ff</color>
+    <color name="Bordeau">#b70000</color>
 
     
 </resources>

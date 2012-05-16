@@ -1,8 +1,11 @@
 package com.marathon_shell;
 import component.marathon_shell.MyAudioPlayer;
 import component.marathon_shell.MyAudioRecorder;
+import component.marathon_shell.MyCalendar.OnCellTouchListener;
 import component.marathon_shell.MyDialogProgress;
 import component.marathon_shell.MyGraphique;
+import component.marathon_shell.MyCalendar;
+import component.marathon_shell.MyCalendar.Cell;
 
 
 import java.io.File;
@@ -14,12 +17,14 @@ import java.util.HashMap;
 import java.util.Locale;
 
 import data.marathon_shell.Course;
+import data.marathon_shell.Parametres;
 import data.marathon_shell.XMLReadAndWrite;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -29,18 +34,17 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.ImageButton;
-import android.widget.LinearLayout.LayoutParams;
+import android.widget.RelativeLayout.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CalendarView;
-import android.widget.CalendarView.OnDateChangeListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.SlidingDrawer;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -156,7 +160,7 @@ public class ScreenAccueil extends Activity {
 	/**
 	 * On déclare un CalendatView qui va servir à sélectionner un jour pour la recherche d'une course.
 	 */
-	private CalendarView cvCalendrier;
+	private MyCalendar myCalendar;
 	
 	private SlidingDrawer sdAlert;
 
@@ -179,6 +183,33 @@ public class ScreenAccueil extends Activity {
     private final Handler handler = new Handler();
 	
 	private boolean test = false;
+	
+	////////////////////////////Paramètres d'une course //////////////////////////////////
+		
+	private EditText tempsMax;
+	
+	private EditText vitesseMax;
+	
+	private EditText coupleMoteur;
+	
+	private EditText pousseeMotrice;
+	
+	private EditText forceFrottement;
+	
+	private EditText poidsConducteur;
+	
+	private EditText distanceCircuit;
+	
+	private EditText forceAerodynamique;
+	
+	private Button validerParams;
+
+	private ImageView ivParametres;
+	
+	private Parametres parametres;
+	
+	
+	
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -225,29 +256,50 @@ public class ScreenAccueil extends Activity {
 		
 		sdAlert = (SlidingDrawer) findViewById(R.id.sdAlert1);
 		
+		myCalendar = (MyCalendar)findViewById(R.id.myCalendar);
+		
 		ivRondRouge = (ImageView) findViewById(R.id.ivRondRouge);
 		
 		ibPlayGris = (ImageButton) findViewById(R.id.ibPlayGris);
 		
 		etNomFichier = (EditText) findViewById(R.id.etNomFichier);
 		
+        tempsMax = (EditText) findViewById(R.id.editTextTempsMax);
+        
+        ivParametres = (ImageView) findViewById(R.id.ivParametres);
+        
 		ibRecording = (ImageButton) findViewById(R.id.ibRecording);
 		
 		ibPlayRouge = (ImageButton) findViewById(R.id.ibPlayRouge);
 		
+		forceFrottement = (EditText) findViewById(R.id.editTextFf);
+		
 		etDescription = (EditText) findViewById(R.id.etDescription);
 		
-		cvCalendrier = (CalendarView) findViewById(R.id.cvCalendrier);
+        validerParams = (Button) findViewById(R.id.btnValiderParams);
 		
 		zoomControls = (ZoomControls) findViewById(R.id.zoomControls);
 		
+        vitesseMax = (EditText) findViewById(R.id.editTextVitesseMax);
+        
+        poidsConducteur = (EditText) findViewById(R.id.editTextPoids);
+        
 		vfListeEcrans = (ViewFlipper) findViewById(R.id.vfListeEcrans);
 		
+        pousseeMotrice = (EditText) findViewById(R.id.editTextPoussee);
+        
 		lvListeFichiers = (ListView) findViewById(R.id.lvListeFichiers);
 		
+        distanceCircuit = (EditText) findViewById(R.id.editTextDistance);
+        
+        coupleMoteur = (EditText) findViewById(R.id.editTextCoupleMoteur);
+        
+		forceAerodynamique = (EditText) findViewById(R.id.editTextForceA);
+		
 		ivAucunEvenement = (ImageView) findViewById(R.id.ivAucunEvenement);
-
-		monGraphiqueVitesse = (MyGraphique) findViewById(R.id.monGraphique);
+		
+		monGraphiqueVitesse = (MyGraphique) findViewById(R.id.myGraphique);
+		
 				
 		
 		/**
@@ -262,7 +314,7 @@ public class ScreenAccueil extends Activity {
 		
 		sousNiveau = new ArrayList<ArrayList<String>>();
 		
-		dialog = new MyDialogProgress(ScreenAccueil.this, cvCalendrier);
+		dialog = new MyDialogProgress(ScreenAccueil.this, myCalendar);
 		
 		ArrayAdapter<String> spAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, items);
 		
@@ -282,7 +334,7 @@ public class ScreenAccueil extends Activity {
 		spAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spOptions.setAdapter(spAdapter);
 		
-		cvCalendrier.getContext().setTheme(R.style.CalendarBackGround);
+		myCalendar.getContext().setTheme(R.style.CalendarBackGround);
 		
 		ivRondRouge.setVisibility(View.INVISIBLE);
 		
@@ -333,6 +385,22 @@ public class ScreenAccueil extends Activity {
 			}
 		});
 		
+		sbAudio.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+			
+			public void onStopTrackingTouch(SeekBar seekBar) {}
+			
+			public void onStartTrackingTouch(SeekBar seekBar) {}
+			
+			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+				Log.d(LogTag, Class + "Je teste");
+				if (progress == 0)
+				{
+					Log.d(LogTag, Class + "Je valide");
+					ibPlayRouge.setVisibility(View.INVISIBLE);
+				}
+			}
+		});
+		
 		sbAudio.setOnTouchListener(new OnTouchListener() {
 
 			public boolean onTouch(View v, android.view.MotionEvent event) {
@@ -355,7 +423,6 @@ public class ScreenAccueil extends Activity {
 						ivRondRouge.setVisibility(View.VISIBLE);
 						myAudioRecorder.start();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -366,7 +433,6 @@ public class ScreenAccueil extends Activity {
 						ivRondRouge.setVisibility(View.INVISIBLE);
 						myAudioRecorder.stop();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -385,7 +451,7 @@ public class ScreenAccueil extends Activity {
 				if (arg2 == 1)
 				{
 					Log.v(LogTag, Class + "Choix spinner : MODIFIER");
-					//deverouillerData();
+					deverouillerData();
 					sdAlert.animateClose();
 				}
 				else if (arg2 == 2)
@@ -395,7 +461,7 @@ public class ScreenAccueil extends Activity {
 						modifierCourse();
 					}
 					Log.v(LogTag, Class + "Choix spinner : SUPPRIMER");
-					//supprimerCourse();
+					supprimerCourse();
 					sdAlert.animateOpen();
 				}
 				//spOptions.setSelection(0);
@@ -410,7 +476,52 @@ public class ScreenAccueil extends Activity {
 		 * Listener sur le calendrier.
 		 * La fonction instanciée est inSelectedDateChange, autrement dit, quand l'utilisateur change de jour.
 		 */
-		cvCalendrier.setOnDateChangeListener(new OnDateChangeListener() {
+		myCalendar.setOnCellTouchListener(new OnCellTouchListener() {
+			
+			public void onTouch(Cell cell) {
+				
+				if(spOptions.getSelectedItemPosition() == 1)
+				{
+					modifierCourse();
+				}
+
+				String date = String.valueOf(cell.getDayOfMonth()) + "-" + String.valueOf(myCalendar.getMonth() + 1) + "-" + String.valueOf(myCalendar.getYear());
+
+				Log.w(LogTag, Class + " Date : " + date);
+				
+				//Si on a des courses à cette date, alors on les affiche dans a la liste.
+				if (niveau.contains(date))
+				{
+					ivAucunEvenement.setVisibility(View.INVISIBLE);
+
+					int indice = niveau.indexOf(date);
+
+					ArrayList<String> nom = new ArrayList<String>();
+
+					for (int i = 0; i < sousNiveau.get(indice).size(); i++)
+					{
+						String name = hmCourses.get(sousNiveau.get(indice).get(i)).getNomFichier();
+						name = name.substring(0, name.indexOf(".xml"));
+						String splitNom [] = name.split("_");
+						String splitDate [] = splitNom[1].split("-");
+						String splitHeure [] = splitNom[2].split("-");
+
+						nom.add(splitNom[0] + " du " + splitDate[2] + "-" + splitDate[1] + "-" + splitDate[0] + " à " + splitHeure[0] + "h" + splitHeure[1] + "m" + splitHeure[2] + "s");
+					}
+
+					lvListeFichiers.setAdapter(new ArrayAdapter<String>(ScreenAccueil.this, android.R.layout.simple_list_item_1, nom));
+				}
+				//Si on n'a pas de courses pour ce jour, alors on affiche l'image.
+				else
+				{
+					ivAucunEvenement.setVisibility(View.VISIBLE);
+					lvListeFichiers.setAdapter(new ArrayAdapter<String>(ScreenAccueil.this, android.R.layout.simple_list_item_1, new ArrayList<String>()));
+				}
+			}
+		});
+		
+		/*
+		myCalendar.setOnDateChangeListener(new OnDateChangeListener() {
 			public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
 
 				if(spOptions.getSelectedItemPosition() == 1)
@@ -450,7 +561,7 @@ public class ScreenAccueil extends Activity {
 				}
 			}
 		});
-		
+		*/
 
 		/**
 		 * Listener du bouton Course
@@ -472,7 +583,7 @@ public class ScreenAccueil extends Activity {
 		 */
 		lvListeFichiers.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-				
+
 				if(spOptions.getSelectedItemPosition() == 1)
 				{
 					modifierCourse();
@@ -542,12 +653,142 @@ public class ScreenAccueil extends Activity {
 			}
 		});
 		
+		
+		ivParametres.setOnClickListener(new OnClickListener() {
+			
+			public void onClick(View v) {
+				if(vfListeEcrans.getDisplayedChild() != 2)
+				{
+					forceFrottement.setText(String.valueOf(parametres.getForceFrottement()));
+			        forceAerodynamique.setText(String.valueOf(parametres.getForceAerodynamique()));
+			        distanceCircuit.setText(String.valueOf(parametres.getDistanceCircuit()));
+			        poidsConducteur.setText(String.valueOf(parametres.getPoidsConducteur()));
+			        pousseeMotrice.setText(String.valueOf(parametres.getPousseeMotrice()));
+			        tempsMax.setText(String.valueOf(parametres.getTempsMax()));
+			        vitesseMax.setText(String.valueOf(parametres.getVitesseMax()));
+			        coupleMoteur.setText(String.valueOf(parametres.getCoupleMoteur()));
+			        
+					vfListeEcrans.setDisplayedChild(2);
+				}
+				else
+				{
+					vfListeEcrans.setDisplayedChild(0);
+				}
+				
+			}
+		});
+		
+		        
+        
+        validerParams.setOnClickListener(new OnClickListener() {
+
+			public void onClick(View v) {
+				
+				ArrayList<String> params = new ArrayList<String>();
+				boolean champsManquant = false ;
+				
+				/**
+				 * On test si tous les paramètres sont renseignés
+				 * Si ce n'est pas le cas, on met le booléen à vrai
+				 * Et pour chaque paramètre non renssigné, on met un petit
+				 * message en rouge dans le champ correspondant
+				 */
+				if (forceAerodynamique.getText().toString().isEmpty()) 
+				{
+					forceAerodynamique.setHint("Il faut une valeur !");
+					forceAerodynamique.setHintTextColor(Color.RED);
+					champsManquant = true ;
+				}
+				
+				if (forceFrottement.getText().toString().isEmpty()) 
+				{
+					forceFrottement.setHint("Il faut une valeur !");
+					forceFrottement.setHintTextColor(Color.RED);
+					champsManquant = true ;
+				}
+				
+				if (pousseeMotrice.getText().toString().isEmpty()) 
+				{
+					pousseeMotrice.setHint("Il faut une valeur !");
+					pousseeMotrice.setHintTextColor(Color.RED);
+					champsManquant = true ;
+				}
+				
+				if (poidsConducteur.getText().toString().isEmpty()) 
+				{
+					poidsConducteur.setHint("Il faut une valeur !");
+					poidsConducteur.setHintTextColor(Color.RED);
+					champsManquant = true ;
+				}
+				
+				if (vitesseMax.getText().toString().isEmpty()) 
+				{
+					vitesseMax.setHint("Il faut une valeur !");
+					vitesseMax.setHintTextColor(Color.RED);
+					champsManquant = true ;
+				}
+				
+				if (tempsMax.getText().toString().isEmpty()) 
+				{
+					tempsMax.setHint("Il faut une valeur !");
+					tempsMax.setHintTextColor(Color.RED);
+					champsManquant = true ;
+				}
+				
+				if (distanceCircuit.getText().toString().isEmpty()) 
+				{
+					distanceCircuit.setHint("Il faut une valeur !");
+					distanceCircuit.setHintTextColor(Color.RED);
+					champsManquant = true ;
+				}
+				
+				if (coupleMoteur.getText().toString().isEmpty()) 
+				{
+					coupleMoteur.setHint("Il faut une valeur !");
+					coupleMoteur.setHintTextColor(Color.RED);
+					champsManquant = true ;
+				}
+				
+				/** Si un paramètre n'est pas renseigné, on arrête là */
+				if (champsManquant)
+					return ;
+				
+				/** Sinon on récupère les valeurs */
+				params.add(forceAerodynamique.getText().toString());
+				params.add(forceFrottement.getText().toString());
+				params.add(pousseeMotrice.getText().toString());
+				params.add(poidsConducteur.getText().toString());
+				params.add(vitesseMax.getText().toString());
+				params.add(tempsMax.getText().toString());
+				params.add(distanceCircuit.getText().toString());
+				params.add(coupleMoteur.getText().toString());
+				
+				/** On écrit le fichier paramètre */
+				String ligneAEcrire = xmlReadAndWrite.FormatParametres(params.get(0), params.get(1), params.get(2), params.get(3), params.get(4), params.get(5), params.get(6), params.get(7));
+				
+				String fileName = "parametres.xml" ;
+				xmlReadAndWrite.MAJFichierParametres(getApplicationContext(), fileName,ligneAEcrire);
+				parametres = new Parametres(params);
+				
+				/** Une fois que c'est fait, on se replace sur l'écran d'accueil */
+				vfListeEcrans.setDisplayedChild(0);
+			}
+			
+		});
+		
+		
+		
 		/**
 		 * Thread qui va s'exécuter au démarrage de l'application.
 		 * Il a pour but de remplir le HashMap avec l'ensemble des courses. Pour celà, on parse le fichier qui contient la liste des courses.
 		 */
 		Thread background1 = new Thread(new Runnable(){
 			public void run() {
+				
+				/** Retourne un objet de type Parametres pour une utilisation ultérieure ... */
+				parametres = xmlReadAndWrite.ParserXMLParametres(getApplicationContext(), "parametres.xml");
+				
+				
 				xmlReadAndWrite.ParserXMLFichiers(getApplicationContext(), niveau, sousNiveau);
 				Log.e(LogTag, "TAILLE DE NIVEAU " + niveau.size());
 						
@@ -611,9 +852,10 @@ public class ScreenAccueil extends Activity {
 				sousNiveau.get(niveau.size() - 1).add(xmlReadAndWrite.getListeFichiersNonParses().get(0));
 				xmlReadAndWrite.getListeFichiersNonParses().remove(0);
 			}
+			/*
 			long today = cvCalendrier.getDate();
 			cvCalendrier.setDate(0);
-			cvCalendrier.setDate(today);
+			cvCalendrier.setDate(today);*/
 			
 			Log.v(LogTag, Class + "Course ajoutée avec succès");
 		}
@@ -632,7 +874,8 @@ public class ScreenAccueil extends Activity {
 		
 		etDescription.setText(hmCourses.get(nomCourse).getDescription());
 		
-		tvMoyenne.setText(String.valueOf(hmCourses.get(nomCourse).getMoyenne()));
+		//tvMoyenne.setText(String.valueOf(hmCourses.get(nomCourse).getMoyenne()));
+		tvMoyenne.setText(String.valueOf(hmCourses.get(nomCourse).getDistance()));
 		
 		monGraphiqueVitesse.setPoints(hmCourses.get(nomCourse).getListePoints());
 
@@ -719,9 +962,11 @@ public class ScreenAccueil extends Activity {
 				
 				Log.d(LogTag, Class + "Suppression de la course " + nomFic);
 				
+				/*
 				long today = cvCalendrier.getDate();
 				cvCalendrier.setDate(0);
 				cvCalendrier.setDate(today);
+				*/
 				
 				vfListeEcrans.setDisplayedChild(0);
 			}

@@ -34,6 +34,9 @@ public class Course {
 	private String dateCourse;
 	private String nomFichier;
 	private String description;
+	
+	//private final double conv = 0.017453292519943;
+	private final int rayonT = 6371;
 
 
 	/****************************
@@ -151,12 +154,40 @@ public class Course {
 	public double getDistance()
 	{
 		double distance = 0;
+		double tempo = 0;
+		/*
 		
 		for (int i = 0; i < ListePoints.size() -1; i++)
 		{
 			distance += Math.sqrt(Math.pow(ListePoints.get(i+1).getLatitude() - ListePoints.get(i).getLatitude(), 2.0) + Math.pow(ListePoints.get(i+1).getLongitude() - ListePoints.get(i).getLongitude(), 2.0));
 		}
-		Log.e(LogTag, Class + distance);
+		*/
+		
+		
+		//Log.e(LogTag, Class + ListePoints.size());
+		for(int i = 0; i < (ListePoints.size() - 1); i++)
+		{
+			tempo = rayonT * Math.toRadians(Math.acos(Math.sin(ListePoints.get(i).getLatitude())*Math.sin(ListePoints.get(i + 1).getLatitude())+Math.cos(ListePoints.get(i).getLatitude())*Math.cos(ListePoints.get(i + 1).getLatitude())*Math.cos(ListePoints.get(i).getLongitude() - ListePoints.get(i + 1).getLongitude())));
+			if (tempo > 0)
+			{
+				distance += rayonT * Math.toRadians(Math.acos(Math.sin(ListePoints.get(i).getLatitude())*Math.sin(ListePoints.get(i + 1).getLatitude())+Math.cos(ListePoints.get(i).getLatitude())*Math.cos(ListePoints.get(i + 1).getLatitude())*Math.cos(ListePoints.get(i).getLongitude() - ListePoints.get(i + 1).getLongitude())));
+			}
+		}
+		
+		 /*
+         * R cos-1(sin(a)sin(b)+cos(a)cos(b)cos(c-d))
+           
+	    avec R le rayon de la terre
+		a = latA
+		b = latB
+		c = lonA
+		d = lonB*/
+		
+		
+		Log.w(LogTag, Class + distance);
+		
+		
+		
 		return distance;
 	}
 

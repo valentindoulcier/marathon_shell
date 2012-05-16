@@ -643,8 +643,201 @@ public class XMLReadAndWrite {
 			FermetureInput(context);
 		}
 	}
+	
+	
+	
+	
+	
+	/**
+     * Fonction qui formatte le contenu d'un fichier de parametres (formattage de parametres).
+     * @param forceAerodynamique
+     * @param forceFrottement
+     * @param pousseeMotrice
+     * @param poidsConducteur
+     * @return
+     */
+    public String FormatParametres(String  forceAerodynamique , String forceFrottement,
+    String pousseeMotrice, String poidsConducteur, String vitesseMax, String tempsMax, String distance, String couple)
+    {
+    
+        return "<parametres>\n<forceAerodynamique>" + forceAerodynamique + "</forceAerodynamique>\n" +
+                "<forceFrottement>" + forceFrottement + "</forceFrottement>\n"+ 
+        		"<pousseeMotrice>" + pousseeMotrice + "</pousseeMotrice>\n" +
+                "<poidsConducteur>" + poidsConducteur + "</poidsConducteur>\n" +
+                "<vitesseMax>" + vitesseMax + "</vitesseMax>\n" +
+                "<tempsMaximum>" + tempsMax + "</tempsMaximum>\n" +
+                "<distance>" + distance + "</distance>\n" +
+                "<coupleMoteur>" + couple + "</coupleMoteur>\n" +
+                "</parametres>\n";
+    }
+	
+	
+    
+	/**
+	 * Fonction qui met à jour la fichier parametres.xml lors de la modification de ceux la.
+	 * 
+	 * @param context
+	 * @param nomFichierConfig
+	 * @param contenu
+	 */
+	public void MAJFichierParametres(Context context, String nomFichierConfig, String contenu)
+	{
+		//CREATION DU FICHIER CONFIGURATION
+		File FichierConfiguration = new File(getPathConfiguration(), nomFichierConfig);
+				
+		OuvertureOutputTRUNC(FichierConfiguration);
+		
+		Write(contenu);
+		FermetureOutput(context);
+	}
+	
+	public Parametres ParserXMLParametres(Context context, String nomFichier)
+	{
+		Parametres parametres = null ;
+		File fichierParametres = new File(pathConfiguration, nomFichier);
+		
+		/** Si le fichier n'existe pas, je le cré avec des valeurs par défaut */
+		if (!fichierParametres.exists())
+		{
+			parametres = CreerParametresParDefaut(fichierParametres);
+			return parametres ;
+		}
+		
+		/** Sinon on le parcours pour récupérer les informations */
+		
+		OuvertureInput(fichierParametres);
+		
+		XmlPullParserFactory factory;
+		
+		
+		try
+		{
+			factory = XmlPullParserFactory.newInstance();
+			factory.setNamespaceAware(true);
+			XmlPullParser xpp = factory.newPullParser();
+			
+			xpp.setInput(new StringReader(Read()));
+			
+			int eventType = xpp.getEventType();
+			while (eventType != XmlPullParser.END_DOCUMENT)
+			{
+				if(eventType == XmlPullParser.START_DOCUMENT){}
+				
+				else if(eventType == XmlPullParser.START_TAG)
+				{
+					if(xpp.getName().equals("parametres")){
+						parametres = new Parametres();
+					}
 
-
+					else if(xpp.getName().equals("forceAerodynamique"))
+					{
+						eventType = xpp.next();
+						if(eventType == XmlPullParser.TEXT)
+							parametres.setForceAerodynamique(Double.parseDouble(xpp.getText()));
+					}
+					
+					else if(xpp.getName().equals("forceAerodynamique"))
+					{
+						eventType = xpp.next();
+						if(eventType == XmlPullParser.TEXT)
+							parametres.setForceAerodynamique(Double.parseDouble(xpp.getText()));
+					}
+					
+					else if(xpp.getName().equals("forceFrottement"))
+					{
+						eventType = xpp.next();
+						if(eventType == XmlPullParser.TEXT)
+							parametres.setForceFrottement(Double.parseDouble(xpp.getText()));
+					}
+					
+					else if(xpp.getName().equals("pousseeMotrice"))
+					{
+						eventType = xpp.next();
+						if(eventType == XmlPullParser.TEXT)
+							parametres.setPousseeMotrice(Double.parseDouble(xpp.getText()));
+					}
+					
+					else if(xpp.getName().equals("poidsConducteur"))
+					{
+						eventType = xpp.next();
+						if(eventType == XmlPullParser.TEXT)
+							parametres.setPoidsConducteur(Double.parseDouble(xpp.getText()));
+					}
+					
+					else if(xpp.getName().equals("vitesseMax"))
+					{
+						eventType = xpp.next();
+						if(eventType == XmlPullParser.TEXT)
+							parametres.setVitesseMax(Double.parseDouble(xpp.getText()));
+					}
+					
+					else if(xpp.getName().equals("tempsMaximum"))
+					{
+						eventType = xpp.next();
+						if(eventType == XmlPullParser.TEXT)
+							parametres.setTempsMax(Double.parseDouble(xpp.getText()));
+					}
+					
+					else if(xpp.getName().equals("distance"))
+					{
+						eventType = xpp.next();
+						if(eventType == XmlPullParser.TEXT)
+							parametres.setDistanceCircuit(Double.parseDouble(xpp.getText()));
+					}
+					
+					else if(xpp.getName().equals("coupleMoteur"))
+					{
+						eventType = xpp.next();
+						if(eventType == XmlPullParser.TEXT)
+							parametres.setCoupleMoteur(Double.parseDouble(xpp.getText()));
+					}
+				}
+				eventType = xpp.next();
+			}
+		}
+		catch (XmlPullParserException e)
+		{
+			e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		
+		FermetureInput(context);
+		
+		return parametres ;
+	}
+	
+	public Parametres CreerParametresParDefaut(File fichierParams)
+	{
+		ArrayList<String> parametres = new ArrayList<String>();
+		parametres.add("0.0345");
+		parametres.add("10");
+		parametres.add("69");
+		parametres.add("65");
+		parametres.add("40");
+		parametres.add("39");
+		parametres.add("3.1");
+		parametres.add("0.5");
+		Parametres params = new Parametres(parametres);
+		String lineToWrite = FormatParametres(parametres.get(0),parametres.get(1),parametres.get(2),
+									parametres.get(3),parametres.get(4),parametres.get(5),
+									parametres.get(6),parametres.get(7));
+		
+		OuvertureOutputTRUNC(fichierParams);
+		
+		Write(lineToWrite);
+		
+		try {
+			osw.close();
+			fOut.close();
+		} catch (IOException e) {
+			Log.e(LogTag, Class + "Fermeture Output");
+		}
+		
+		return params ;
+	}
 	
 	
 }

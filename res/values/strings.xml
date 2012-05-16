@@ -7,17 +7,42 @@
     <string name="supprimer">Supprimer</string>
     <string name="accueil">Accueil</string>
     <string name="liste">Liste d\'événements</string>
-    <string name="description">Description de la course :</string>
-	<string name="descriptionHint">Entrez votre description ...</string>
+    <string name="description">Description de la course</string>
+	<string name="descriptionHint">Entrez votre description !!</string>
 	
     <item type="integer" name="graphWidth" format="integer">900</item>
     <item type="integer" name="graphHeight" format="integer">500</item>
     <dimen name="graphWidth">900dp</dimen>
     <dimen name="graphHeight">500dp</dimen>
     <string name="detail">Détail de la course :</string>
-    <string name="chiffre">La course en chiffres :</string>
+    <string name="chiffre">La course en chiffres</string>
     <string name="vitesse_moyenne">Vitesse moyenne (km/h) : </string>
     <string name="distance">Distance parcourue (m) : </string>
     <string name="temps">Temps effectué (min) : </string>
+    <string name="Player">Audio Player</string>
+    <string name="Recorder">Audio Recorder</string>
+    <string name="hint">Non dispo</string>
+    <string name="Graphique_Vitesse">Courbe de vitesse</string>
+    <string name="aucunEvenement">Aucun évenement</string>
+    <string name="button">Boutton</string>
+    <string name="alerte">Message d\'alerte</string>
+    <string name="dimanche">DIM</string>
+    <string name="lundi">LUN</string>
+    <string name="mardi">MAR</string>
+    <string name="mercredi">MER</string>
+    <string name="jeudi">JEU</string>
+    <string name="vendredi">VEN</string>
+    <string name="samedi">SAM</string>
+    
+    <string name="forceAerodynamique">Force Aerodynamique (N)</string>
+    <string name="forceFrottement">Force de Frottement (N)</string>
+    <string name="pousseMotrice">Poussée Motrice (N.m)</string>
+    <string name="poidsConducteur">Poids du Conducteur (kg)</string>
+    <string name="distanceCircuit">Distance Circuit (km)</string>
+    <string name="tempsMax">Temps Maximum (min)</string>
+    <string name="vitesseMax">Vitesse Maximale (km/h)</string>
+    <string name="btnValiderParams">Valider Paramètres</string>
+    <string name="coupleMoteur">Couple Moteur (N.m)</string>
+    <string name="parametres">Paramètres</string>
 	
 </resources>

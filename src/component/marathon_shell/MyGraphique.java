@@ -136,6 +136,47 @@ public class MyGraphique extends View {
     	
     	nbPoints = points.size();
     	
+    	/** On dessine les axes en noir */
+		paint.setColor(Color.BLACK);
+		canvas.drawLine(origineX, origineY, origineX, 20, paint);
+		canvas.drawLine(origineX, origineY, getWidth() - origineX, origineY, paint);
+
+		/** Pour les petites flèches au bout des axes ... */
+		Path path = new Path();
+		path.moveTo(0, 5);
+		path.lineTo(5, 0);
+		path.lineTo(10, 5);
+		path.close();
+		path.offset(origineX-5, 15);
+		canvas.drawPath(path, paint);
+		path.reset();
+
+		path.moveTo(0, 0);
+		path.lineTo(5, 5);
+		path.lineTo(0, 10);
+		path.close();
+		path.offset(getWidth() - origineX, origineY-5);
+		canvas.drawPath(path, paint);
+		
+		/** Les libellés des axes ... */
+		canvas.drawText("V", 30, 15, paint);
+		canvas.drawText("t", getWidth() - 30, getHeight() - 30, paint);
+		
+		/** Echelle pour l'axe des ordonnées (vitesse), le +10 étant une marge pour l'affichage */
+		scaleY = origineY / (140 + 10) ; 
+		
+		/** On dessine des repères de vitesse pour les points tous les 10km/h */ 
+		i = 0 ;
+		paint.setTextAlign(Paint.Align.CENTER);
+		for (i = 10 ; i <= 140 ; i = i + 10)
+		{
+			paint.setColor(Color.LTGRAY);
+			canvas.drawLine(origineX, origineY - i*scaleY,
+					getWidth() - origineX, origineY - i*scaleY, paint);
+			paint.setColor(Color.BLACK);
+			canvas.drawText(Integer.toString(i), 25, origineY - i*scaleY, paint);
+		}
+		
     	if (nbPoints != 0)
     	{
     		nbPointsDessine = nbPoints*zoomLevel / 16 ;
@@ -156,33 +197,9 @@ public class MyGraphique extends View {
     		//System.out.printf("ScaleX : %f \n",scaleX);
     		//System.out.printf("OrigineY : %d \n",origineY);
 
-    		/** On dessine les axes en noir */
-    		paint.setColor(Color.BLACK);
-    		canvas.drawLine(origineX, origineY, origineX, 20, paint);
-    		canvas.drawLine(origineX, origineY, getWidth() - origineX, origineY, paint);
-
-    		/** Pour les petites flèches au bout des axes ... */
-    		Path path = new Path();
-    		path.moveTo(0, 5);
-    		path.lineTo(5, 0);
-    		path.lineTo(10, 5);
-    		path.close();
-    		path.offset(origineX-5, 15);
-    		canvas.drawPath(path, paint);
-    		path.reset();
-
-    		path.moveTo(0, 0);
-    		path.lineTo(5, 5);
-    		path.lineTo(0, 10);
-    		path.close();
-    		path.offset(getWidth() - origineX, origineY-5);
-    		canvas.drawPath(path, paint);
-
-    		/** Les libellés des axes ... */
-    		canvas.drawText("V", 30, 15, paint);
-    		canvas.drawText("t", getWidth() - 30, getHeight() - 30, paint);
-
+    		
     		/** On dessine des repères de vitesse pour les points tous les 10km/h */ 
+    		/*
     		i = 0 ;
     		paint.setTextAlign(Paint.Align.CENTER);
     		for (i = 10 ; i <= pointVitesseMax.getVitesse() ; i = i + 10)
@@ -192,7 +209,7 @@ public class MyGraphique extends View {
     					getWidth() - origineX, origineY - i*scaleY, paint);
     			paint.setColor(Color.BLACK);
     			canvas.drawText(Integer.toString(i), 25, origineY - i*scaleY, paint);
-    		}
+    		}*/
 
     		/** On dessine des repères de temps pour les points */ 
     		i = 0 ;

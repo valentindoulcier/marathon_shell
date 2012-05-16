@@ -14,19 +14,20 @@ import android.widget.CalendarView;
  * @version 1.0
  * @see     XMLReadAndWrite
  */
+@SuppressWarnings("unused")
 public class MyDialogProgress extends ProgressDialog {
 
-	private CalendarView cvCalendrier;
+	private MyCalendar cvCalendrier;
 
-	public MyDialogProgress(Context context, CalendarView calendar) {
+	public MyDialogProgress(Context context, MyCalendar calendar) {
 		super(context);
 		cvCalendrier = calendar;
 	}
 	
 	protected void onStop() {
-		long today = cvCalendrier.getDate();
-		cvCalendrier.setDate(0);
-		cvCalendrier.setDate(today);
+		long today = cvCalendrier.getDate().getTimeInMillis();
+		//cvCalendrier.setDate(0);
+		//cvCalendrier.setDate(today);
 	}
 
 }
