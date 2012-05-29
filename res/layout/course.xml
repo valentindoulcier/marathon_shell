@@ -11,8 +11,7 @@
         android:layout_width="276dp"
         android:layout_height="126dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:text="ToggleButton" />
+        android:layout_alignParentRight="true" />
 
     <TextView
         android:id="@+id/tvVitesse"
@@ -20,26 +19,34 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="136dp"
-        android:text="Large Text"
+        android:text="@string/accueil"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textSize="50dip" />
-
+
     <ProgressBar
-        android:id="@+id/pbVitesse1"
+        android:id="@+id/pbVitesse"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="815dp"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="65dp" />
+
+    <SeekBar
+        android:id="@+id/sbVitesse"
+        android:layout_width="815dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvVitesse"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="61dp" />
 
     <Chronometer
         android:id="@+id/chCompteARebours"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toLeftOf="@+id/pbVitesse1"
-        android:text="Chronometer"
-        android:textSize="50px" />
+        android:layout_below="@+id/sbVitesse"
+        android:layout_marginTop="123dp"
+        android:layout_toLeftOf="@+id/sbVitesse"
+        android:textSize="50dp" />
 
 </RelativeLayout>

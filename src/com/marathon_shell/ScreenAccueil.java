@@ -162,6 +162,10 @@ public class ScreenAccueil extends Activity {
 	 */
 	private MyCalendar myCalendar;
 	
+	private ImageView ivPrec;
+	
+	private ImageView ivSuiv;
+	
 	private SlidingDrawer sdAlert;
 
 	private ImageButton ibRecording;
@@ -243,6 +247,10 @@ public class ScreenAccueil extends Activity {
 		 */
 		
 		bCourse = (Button) findViewById(R.id.bCourse1);
+		
+		ivPrec = (ImageView) findViewById(R.id.ivPrec);
+		
+		ivSuiv = (ImageView) findViewById(R.id.ivSuiv);
 		
 		sbAudio = (SeekBar) findViewById(R.id.sbAudio);
 		
@@ -485,7 +493,7 @@ public class ScreenAccueil extends Activity {
 					modifierCourse();
 				}
 
-				String date = String.valueOf(cell.getDayOfMonth()) + "-" + String.valueOf(myCalendar.getMonth() + 1) + "-" + String.valueOf(myCalendar.getYear());
+				String date = String.valueOf(cell.jour) + "-" + String.valueOf(myCalendar.getMonth() + 1) + "-" + String.valueOf(myCalendar.getYear());
 
 				Log.w(LogTag, Class + " Date : " + date);
 				
@@ -517,6 +525,20 @@ public class ScreenAccueil extends Activity {
 					ivAucunEvenement.setVisibility(View.VISIBLE);
 					lvListeFichiers.setAdapter(new ArrayAdapter<String>(ScreenAccueil.this, android.R.layout.simple_list_item_1, new ArrayList<String>()));
 				}
+			}
+		});
+		
+		ivPrec.setOnClickListener(new OnClickListener() {
+			
+			public void onClick(View v) {
+				myCalendar.previousMonth();
+			}
+		});
+        
+        ivSuiv.setOnClickListener(new OnClickListener() {
+			
+			public void onClick(View v) {
+				myCalendar.nextMonth();
 			}
 		});
 		

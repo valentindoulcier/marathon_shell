@@ -44,5 +44,8 @@
     <string name="btnValiderParams">Valider Paramètres</string>
     <string name="coupleMoteur">Couple Moteur (N.m)</string>
     <string name="parametres">Paramètres</string>
+    <string name="marathon_shell">Shell Eco-Marathon</string>
+    <string name="MSDescription">Le Shell Eco-marathon est un programme éducatif mondial qui encourage l\'innovation et favorise le développement de technologies de pointe pour une meilleure efficacité énergétique.</string>
+    <string name="MSGoal">Le but de cette application est de fournir au pilote du véhicule une aide stratégique au pilotage.\nAussi, on fourni au back office un ensemble de données qui va servir à analyser la course, voir les performances réalisées et optimiser la voiture en se basant sur ces valeurs réelles.</string>
 	
 </resources>

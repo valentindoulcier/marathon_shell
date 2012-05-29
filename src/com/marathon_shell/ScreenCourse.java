@@ -6,7 +6,9 @@ package com.marathon_shell;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import data.marathon_shell.XMLReadAndWrite;
@@ -27,6 +29,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Chronometer;
 import android.widget.ProgressBar;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -88,6 +91,11 @@ public class ScreenCourse extends Activity implements LocationListener {
 	private ProgressBar pbVitesse;
 	
 	/**
+	 * On déclare une SeekBar qui va visuellement montrer l'état de la vitesse.
+	 */
+	private SeekBar sbVitesse;
+	
+	/**
 	 * On déclare un Chronometer qui va afficher le décompte du temps restant.
 	 */
 	private Chronometer chCompteARebours;
@@ -96,6 +104,8 @@ public class ScreenCourse extends Activity implements LocationListener {
 	 * On déclare un Togglebutton qui nous permets de lancer et de stopper la course.
 	 */
 	private ToggleButton tbCourse;
+	
+	List<Double> listVitesses = new ArrayList<Double>();
 	
 	
 	/** Called when the activity is first created. */
@@ -124,11 +134,13 @@ public class ScreenCourse extends Activity implements LocationListener {
 		 * On va associer chaque objet déclaré à l'objet graphique contenu dans le layout.
 		 */
 		
+		sbVitesse = (SeekBar) findViewById(R.id.sbVitesse);
+		
 		tvVitesse = (TextView) findViewById(R.id.tvVitesse);
 		
 		tbCourse = (ToggleButton) findViewById(R.id.tbCourse);
 		
-		pbVitesse = (ProgressBar) findViewById(R.id.pbVitesse1);
+		pbVitesse = (ProgressBar) findViewById(R.id.pbVitesse);
 		
 		chCompteARebours = (Chronometer) findViewById(R.id.chCompteARebours);
 		
@@ -146,6 +158,8 @@ public class ScreenCourse extends Activity implements LocationListener {
 		 */
 		
 		pbVitesse.setMax(150);
+		
+		sbVitesse.setMax(150);
 		
 		tbCourse.setBackgroundColor(Color.GREEN);
 		//tbCourse.setEnabled(false);
@@ -250,6 +264,23 @@ public class ScreenCourse extends Activity implements LocationListener {
 		}
 	}
 	
+	
+	/**
+	 * Fonction qui calcule la vitesse en temps réel.
+	 * @return
+	 */
+	public double getMoyenne()
+	{
+		double total = 0;
+		
+		for (Double vitesse : listVitesses)
+		{
+		    total += vitesse;
+		}
+		
+		return (total / listVitesses.size());
+	}
+	
 
 	/**
 	 * Listener du GPS, onLocationChanged
@@ -269,10 +300,15 @@ public class ScreenCourse extends Activity implements LocationListener {
 																String.valueOf(actualLocation.getLongitude())));
 		}
 		
+		listVitesses.add((double)(getSpeed() * 3.6));
+		
 		tvVitesse.setText( (int)(getSpeed() * 36) / 10.0f + " km/h" );
 		pbVitesse.setRotationX(45.0f);
 		pbVitesse.setBackgroundColor(R.color.Rouge);
 		pbVitesse.setProgress((int)(getSpeed() * 3.6));
+		
+		sbVitesse.setProgress((int)(getSpeed() * 3.6));
+		sbVitesse.setThumbOffset((int)getMoyenne());
 	}
 
 	public void onProviderDisabled(String provider) {}

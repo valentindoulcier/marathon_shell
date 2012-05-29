@@ -103,18 +103,6 @@
                     android:layout_alignParentLeft="true" >
 
                     <TextView
-                        android:id="@+id/TextView05"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center|center_horizontal"
-                        android:layout_weight="1"
-                        android:gravity="center_horizontal"
-                        android:text="@string/dimanche"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:textColor="@color/Noir"
-                        android:textSize="15dp" />
-
-                    <TextView
                         android:id="@+id/TextView04"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -185,7 +173,39 @@
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textColor="@color/Noir"
                         android:textSize="15dp" />
+
+                    <TextView
+                        android:id="@+id/TextView05"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:text="@string/dimanche"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/Noir"
+                        android:textSize="15dp" />
+
                 </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/ivPrec"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignTop="@+id/tvMois"
+                    android:layout_marginLeft="50dp"
+                    android:src="@drawable/fleche_prec"
+                    android:contentDescription="@string/accueil" />
+
+                <ImageView
+                    android:id="@+id/ivSuiv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignTop="@+id/tvMois"
+                    android:layout_marginRight="49dp"
+                    android:src="@drawable/fleche_suiv"
+                    android:contentDescription="@string/accueil" />
 
             </RelativeLayout>
 
@@ -249,6 +269,47 @@
                     android:layout_marginBottom="23dp"
                     android:layout_marginRight="32dp"
                     android:text="@string/button" />
+
+                <TextView
+                    android:id="@+id/textView7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="41dp"
+                    android:text="@string/marathon_shell"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@color/Noir"
+                    android:textSize="52dip"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textView8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignRight="@+id/bCourse1"
+                    android:layout_below="@+id/textView7"
+                    android:layout_marginLeft="44dp"
+                    android:layout_marginTop="82dp"
+                    android:text="@string/MSDescription"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/Noir"
+                    android:textSize="22dip" />
+
+                <TextView
+                    android:id="@+id/textView9"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/textView8"
+                    android:layout_alignRight="@+id/textView8"
+                    android:layout_below="@+id/textView8"
+                    android:layout_marginTop="48dp"
+                    android:text="@string/MSGoal"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/Noir"
+                    android:textSize="22dip" />
+
             </RelativeLayout>
 
             <LinearLayout

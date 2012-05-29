@@ -25,7 +25,7 @@ public class MyDialogProgress extends ProgressDialog {
 	}
 	
 	protected void onStop() {
-		long today = cvCalendrier.getDate().getTimeInMillis();
+		//long today = cvCalendrier.getDate().getTimeInMillis();
 		//cvCalendrier.setDate(0);
 		//cvCalendrier.setDate(today);
 	}
