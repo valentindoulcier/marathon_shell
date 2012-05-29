@@ -310,6 +310,22 @@
                     android:textColor="@color/Noir"
                     android:textSize="22dip" />
 
+                <ImageView
+                    android:id="@+id/imageView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/textView9"
+                    android:layout_alignTop="@+id/bCourse1"
+                    android:src="@drawable/logo_polytech_1" />
+
+                <ImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/imageView2"
+                    android:layout_toRightOf="@+id/imageView2"
+                    android:src="@drawable/logo_polytech_2" />
+
             </RelativeLayout>
 
             <LinearLayout
@@ -815,7 +831,7 @@
             
         </ViewFlipper>
     </RelativeLayout>
-
+
     <SlidingDrawer
         android:id="@+id/sdAlert1"
         android:layout_width="500dp"
@@ -823,7 +839,8 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:content="@+id/content"
-        android:handle="@+id/handle" >
+        android:handle="@+id/handle"
+        android:visibility="invisible" >
 
         <RelativeLayout
             android:id="@+id/content"
